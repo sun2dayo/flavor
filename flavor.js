@@ -110,52 +110,6 @@ document.addEventListener("DOMContentLoaded", function () {
 	})();
 
 	// =====================================================================
-	// PART 2.5: SIDEBAR TOGGLE (Pin/Unpin second sidebar)
-	// =====================================================================
-
-	(function initSidebarToggle() {
-		// Skip login, public pages, and TakePOS
-		if (document.body.classList.contains('bodylogin') ||
-			document.body.classList.contains('bodytakepos') ||
-			document.querySelector('.backgreypublicpayment') ||
-			document.querySelector('.publicnewmemberform')) {
-			return;
-		}
-
-		// Restore saved state IMMEDIATELY (before render)
-		if (localStorage.getItem('flavor-sidebar-collapsed') === 'true') {
-			document.body.classList.add('sidebar-hidden');
-		}
-
-		// Create the toggle button (Pin icon, inside topbar)
-		var toggleBtn = document.createElement('div');
-		toggleBtn.id = 'flavor-sidebar-toggle';
-		toggleBtn.title = 'Pin/Unpin Sidebar';
-		toggleBtn.innerHTML = '<i class="fas fa-thumbtack"></i>';
-
-		// Inject into topbar for clean integration
-		var topbar = document.getElementById('id-top');
-		if (topbar) {
-			topbar.appendChild(toggleBtn);
-		} else {
-			document.body.appendChild(toggleBtn);
-		}
-
-		// Set initial pin rotation state
-		if (document.body.classList.contains('sidebar-hidden')) {
-			toggleBtn.classList.add('unpinned');
-		}
-
-		// Click handler
-		toggleBtn.addEventListener('click', function () {
-			document.body.classList.toggle('sidebar-hidden');
-			var isHidden = document.body.classList.contains('sidebar-hidden');
-			localStorage.setItem('flavor-sidebar-collapsed', isHidden);
-			toggleBtn.classList.toggle('unpinned', isHidden);
-		});
-	})();
-
-	// =====================================================================
 	// PART 3: MOBILE MENU (only on internal pages)
 	// =====================================================================
 
