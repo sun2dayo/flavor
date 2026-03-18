@@ -60,6 +60,40 @@ $availableMenus = array(
 );
 
 // ──────────────────────────────────────────────────────────────────────────────
+// Admin Tools submenu — granular control over each item
+// ──────────────────────────────────────────────────────────────────────────────
+$adminToolsSubmenus = array(
+    'admin_system_dolibarr'     => array('label' => 'About Dolisys',         'icon' => 'ℹ️',  'css' => '.menu_contenu_admin_system_dolibarr'),
+    'admin_system_browser'      => array('label' => 'About Browser',         'icon' => '🌐', 'css' => '.menu_contenu_admin_system_browser'),
+    'admin_system_os'           => array('label' => 'About OS',              'icon' => '💻', 'css' => '.menu_contenu_admin_system_os'),
+    'admin_system_web'          => array('label' => 'About Web Server',      'icon' => '🖥️',  'css' => '.menu_contenu_admin_system_web'),
+    'admin_system_phpinfo'      => array('label' => 'About PHP',             'icon' => '🐘', 'css' => '.menu_contenu_admin_system_phpinfo'),
+    'admin_system_database'     => array('label' => 'About Database',        'icon' => '🗄️',  'css' => '.menu_contenu_admin_system_database'),
+    'admin_system_perf'         => array('label' => 'About Performances',    'icon' => '⚡', 'css' => '.menu_contenu_admin_system_perf'),
+    'admin_system_security'     => array('label' => 'About Security',        'icon' => '🛡️',  'css' => '.menu_contenu_admin_system_security'),
+    'admin_tools_listevents'    => array('label' => 'Security Events',       'icon' => '📜', 'css' => '.menu_contenu_admin_tools_listevents'),
+    'admin_tools_listsessions'  => array('label' => 'Users Sessions',        'icon' => '👥', 'css' => '.menu_contenu_admin_tools_listsessions'),
+    'admin_tools_dolibarr_export' => array('label' => 'Backup',              'icon' => '💾', 'css' => '.menu_contenu_admin_tools_dolibarr_export'),
+    'admin_tools_dolibarr_import' => array('label' => 'Restore',             'icon' => '📥', 'css' => '.menu_contenu_admin_tools_dolibarr_import'),
+    'admin_tools_update'        => array('label' => 'Upgrade / Extend',      'icon' => '🔄', 'css' => '.menu_contenu_admin_tools_update'),
+    'admin_tools_purge'         => array('label' => 'Purge',                 'icon' => '🗑️',  'css' => '.menu_contenu_admin_tools_purge'),
+    'product_admin_product_tools' => array('label' => 'Global VAT Update',   'icon' => '💱', 'css' => '.menu_contenu_product_admin_product_tools'),
+    'barcode_codeinit'          => array('label' => 'Mass Barcode Init',     'icon' => '📊', 'css' => '.menu_contenu_barcode_codeinit'),
+    'printing_index'            => array('label' => 'One Click Printing Jobs','icon' => '🖨️',  'css' => '.menu_contenu_printing_index'),
+    'admin_emailcollector_list' => array('label' => 'Email Collectors',      'icon' => '📧', 'css' => '.menu_contenu_admin_emailcollector_list'),
+    'cron_list'                 => array('label' => 'Scheduled Jobs',        'icon' => '⏰', 'css' => '.menu_contenu_cron_list'),
+);
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Module setup tabs — hide specific tabs from Modules/Application setup page
+// ──────────────────────────────────────────────────────────────────────────────
+$moduleTabs = array(
+    'marketplace' => array('label' => 'Find external applications and modules', 'icon' => '🔍', 'css' => 'a[href*="mode=marketplace"]'),
+    'deploy'      => array('label' => 'Deploy/install external app/module',     'icon' => '📤', 'css' => 'a[href*="mode=deploy"]'),
+    'develop'     => array('label' => 'Develop your own app/modules',           'icon' => '🧑‍💻', 'css' => 'a[href*="mode=develop"]'),
+);
+
+// ──────────────────────────────────────────────────────────────────────────────
 // Actions
 // ──────────────────────────────────────────────────────────────────────────────
 $action = GETPOST('action', 'aZ');
@@ -75,36 +109,63 @@ if ($action === 'activate') {
     }
 }
 
-// Action: Save menu visibility
-if ($action === 'savemenus') {
-    $hiddenMenus = array();
-    foreach ($availableMenus as $key => $menu) {
-        if (GETPOST('hide_'.$key, 'alpha')) {
-            $hiddenMenus[] = $key;
+// Action: Save ALL visibility settings (menus + admin tools + module tabs)
+if ($action === 'savemenus' || $action === 'saveadmintools' || $action === 'savemoduletabs' || $action === 'saveall') {
+    // Read existing CSS sections we are NOT updating to preserve them
+    $cssFile = __DIR__ . '/flavor_hidden.css';
+    $existingContent = file_exists($cssFile) ? file_get_contents($cssFile) : '';
+
+    // ── Parse existing sections ──
+    $sections = array('menus' => '', 'admintools' => '', 'moduletabs' => '');
+    if (preg_match('/\/\* SECTION: MENUS \*\/(.*?)\/\* END: MENUS \*\//s', $existingContent, $m)) $sections['menus'] = $m[1];
+    if (preg_match('/\/\* SECTION: ADMINTOOLS \*\/(.*?)\/\* END: ADMINTOOLS \*\//s', $existingContent, $m)) $sections['admintools'] = $m[1];
+    if (preg_match('/\/\* SECTION: MODULETABS \*\/(.*?)\/\* END: MODULETABS \*\//s', $existingContent, $m)) $sections['moduletabs'] = $m[1];
+
+    // ── Update the section being saved ──
+    if ($action === 'savemenus' || $action === 'saveall') {
+        $sections['menus'] = "\n";
+        foreach ($availableMenus as $key => $menu) {
+            if (GETPOST('hide_'.$key, 'alpha')) {
+                $sections['menus'] .= "/* Hide: {$menu['label']} */\n";
+                $sections['menus'] .= "#mainmenutd_{$key}, .menu_contenu[id*=\"{$key}\"], div.vmenu div[id*=\"{$key}\"], li.tmenu[data-mainmenu=\"{$key}\"], div.mainmenu.{$key} { display: none !important; }\n\n";
+            }
         }
     }
 
-    // Generate the CSS file
-    $cssContent = "/* ============================================================================== */\n";
-    $cssContent .= "/* Auto-generated by Flavor Setup — Menu Visibility Manager                     */\n";
-    $cssContent .= "/* Generated: ".date('Y-m-d H:i:s')."                                          */\n";
-    $cssContent .= "/* DO NOT EDIT MANUALLY — changes will be overwritten by setup.php              */\n";
-    $cssContent .= "/* ============================================================================== */\n\n";
-
-    foreach ($hiddenMenus as $menuKey) {
-        $cssContent .= "/* Hide: ".($availableMenus[$menuKey]['label'] ?? $menuKey)." */\n";
-        $cssContent .= "#mainmenutd_".$menuKey.", \n";
-        $cssContent .= ".menu_contenu[id*=\"".$menuKey."\"], \n";
-        $cssContent .= "div.vmenu div[id*=\"".$menuKey."\"], \n";
-        $cssContent .= "li.tmenu[data-mainmenu=\"".$menuKey."\"], \n";
-        $cssContent .= "div.mainmenu.".$menuKey." { display: none !important; }\n\n";
+    if ($action === 'saveadmintools' || $action === 'saveall') {
+        $sections['admintools'] = "\n";
+        foreach ($adminToolsSubmenus as $key => $item) {
+            if (GETPOST('hide_at_'.$key, 'alpha')) {
+                $sections['admintools'] .= "/* Hide: {$item['label']} */\n";
+                $sections['admintools'] .= "{$item['css']} { display: none !important; }\n\n";
+            }
+        }
     }
 
-    $cssFile = __DIR__ . '/flavor_hidden.css';
+    if ($action === 'savemoduletabs' || $action === 'saveall') {
+        $sections['moduletabs'] = "\n";
+        foreach ($moduleTabs as $key => $tab) {
+            if (GETPOST('hide_mt_'.$key, 'alpha')) {
+                $sections['moduletabs'] .= "/* Hide tab: {$tab['label']} */\n";
+                $sections['moduletabs'] .= "{$tab['css']} { display: none !important; }\n\n";
+            }
+        }
+    }
+
+    // ── Rebuild the full CSS file ──
+    $cssContent  = "/* ============================================================================== */\n";
+    $cssContent .= "/* Auto-generated by Flavor Setup — Visibility Manager                          */\n";
+    $cssContent .= "/* Generated: ".date('Y-m-d H:i:s')."                                            */\n";
+    $cssContent .= "/* DO NOT EDIT MANUALLY — changes will be overwritten by setup.php              */\n";
+    $cssContent .= "/* ============================================================================== */\n\n";
+    $cssContent .= "/* SECTION: MENUS */".$sections['menus']."/* END: MENUS */\n\n";
+    $cssContent .= "/* SECTION: ADMINTOOLS */".$sections['admintools']."/* END: ADMINTOOLS */\n\n";
+    $cssContent .= "/* SECTION: MODULETABS */".$sections['moduletabs']."/* END: MODULETABS */\n";
+
     if (file_put_contents($cssFile, $cssContent) !== false) {
-        $message = '<div class="alert alert-success">✅ <strong>Menu visibility saved!</strong> '.count($hiddenMenus).' menu(s) hidden. Changes are active immediately.</div>';
+        $message = '<div class="alert alert-success">✅ <strong>Visibility settings saved!</strong> Changes are active immediately.</div>';
     } else {
-        $message = '<div class="alert alert-error">❌ <strong>Error:</strong> Could not write flavor_hidden.css. Check file permissions on theme/flavor/ directory.</div>';
+        $message = '<div class="alert alert-error">❌ <strong>Error:</strong> Could not write flavor_hidden.css. Check file permissions.</div>';
     }
 }
 
@@ -122,14 +183,29 @@ if ($action === 'lock') {
 // ──────────────────────────────────────────────────────────────────────────────
 $jsEnabled = getDolGlobalString('ALLOW_THEME_JS');
 
-// Read currently hidden menus from flavor_hidden.css
+// Read currently hidden items from flavor_hidden.css
 $currentlyHidden = array();
+$currentlyHiddenAT = array();
+$currentlyHiddenMT = array();
 $cssFile = __DIR__ . '/flavor_hidden.css';
 if (file_exists($cssFile)) {
     $content = file_get_contents($cssFile);
+    // Main menus
     foreach ($availableMenus as $key => $menu) {
         if (strpos($content, '#mainmenutd_'.$key) !== false) {
             $currentlyHidden[$key] = true;
+        }
+    }
+    // Admin Tools submenu
+    foreach ($adminToolsSubmenus as $key => $item) {
+        if (strpos($content, $item['css']) !== false) {
+            $currentlyHiddenAT[$key] = true;
+        }
+    }
+    // Module tabs
+    foreach ($moduleTabs as $key => $tab) {
+        if (strpos($content, $tab['css']) !== false) {
+            $currentlyHiddenMT[$key] = true;
         }
     }
 }
@@ -199,6 +275,12 @@ if (file_exists($cssFile)) {
     .menu-item input[type="checkbox"]:checked::after { content: '✕'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #FFF; font-size: 11px; font-weight: 700; }
     .menu-item-icon { font-size: 16px; }
     .menu-item-label { font-size: 0.85rem; font-weight: 500; }
+
+    /* Section divider */
+    .section-label { font-size: 0.75rem; font-weight: 600; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; margin-top: 16px; }
+    .section-label:first-child { margin-top: 0; }
+    .card-icon.teal { background: linear-gradient(135deg, #F0FDFA, #CCFBF1); }
+    .card-icon.purple { background: linear-gradient(135deg, #F5F3FF, #EDE9FE); }
 
     /* Footer */
     .footer { text-align: center; padding: 24px; color: #94A3B8; font-size: 0.8rem; }
@@ -288,7 +370,74 @@ if (file_exists($cssFile)) {
     </div>
 
     <!-- ────────────────────────────────────────────────────────────────────── -->
-    <!-- CARD 3: Security Lock -->
+    <!-- CARD 3: Admin Tools Submenu Manager -->
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon teal">🛠️</div>
+            <div>
+                <div class="card-title">Admin Tools — Submenu Control</div>
+                <div class="card-subtitle">Granular control over each Admin Tools sidebar item</div>
+            </div>
+        </div>
+
+        <form method="POST" action="?action=saveadmintools">
+            <div class="section-label">System Information</div>
+            <div class="menu-grid">
+                <?php foreach ($adminToolsSubmenus as $key => $item):
+                    $isChecked = !empty($currentlyHiddenAT[$key]);
+                    // Group label
+                    if ($key === 'admin_tools_listevents') echo '</div><div class="section-label">Security & Sessions</div><div class="menu-grid">';
+                    if ($key === 'admin_tools_dolibarr_export') echo '</div><div class="section-label">Maintenance</div><div class="menu-grid">';
+                    if ($key === 'product_admin_product_tools') echo '</div><div class="section-label">Utilities</div><div class="menu-grid">';
+                ?>
+                <label class="menu-item <?php echo $isChecked ? 'checked' : ''; ?>" onclick="this.classList.toggle('checked')">
+                    <input type="checkbox" name="hide_at_<?php echo $key; ?>" value="1" <?php echo $isChecked ? 'checked' : ''; ?>>
+                    <span class="menu-item-icon"><?php echo $item['icon']; ?></span>
+                    <span class="menu-item-label"><?php echo htmlspecialchars($item['label']); ?></span>
+                </label>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-success">💾 Save Admin Tools Visibility</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <!-- CARD 4: Module Setup Tabs Manager -->
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon purple">🧩</div>
+            <div>
+                <div class="card-title">Module Setup Tabs</div>
+                <div class="card-subtitle">Hide tabs from the Modules/Application setup page</div>
+            </div>
+        </div>
+
+        <form method="POST" action="?action=savemoduletabs">
+            <div class="menu-grid">
+                <?php foreach ($moduleTabs as $key => $tab):
+                    $isChecked = !empty($currentlyHiddenMT[$key]);
+                ?>
+                <label class="menu-item <?php echo $isChecked ? 'checked' : ''; ?>" onclick="this.classList.toggle('checked')">
+                    <input type="checkbox" name="hide_mt_<?php echo $key; ?>" value="1" <?php echo $isChecked ? 'checked' : ''; ?>>
+                    <span class="menu-item-icon"><?php echo $tab['icon']; ?></span>
+                    <span class="menu-item-label"><?php echo htmlspecialchars($tab['label']); ?></span>
+                </label>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-success">💾 Save Tab Visibility</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <!-- CARD 5: Security Lock -->
     <!-- ────────────────────────────────────────────────────────────────────── -->
     <div class="card">
         <div class="card-header">
