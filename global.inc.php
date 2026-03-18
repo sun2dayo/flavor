@@ -4908,11 +4908,12 @@ body.bodylogin #login-submit-wrapper input:hover {
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Hidden state: sidebar removed from flow */
+/* Hidden state: sidebar + side-nav removed from flow */
 body.sidebar-hidden #id-left,
 body.sidebar-hidden .side-nav {
 	width: 0 !important;
 	min-width: 0 !important;
+	max-width: 0 !important;
 	overflow: hidden !important;
 	opacity: 0 !important;
 	padding: 0 !important;
@@ -4921,11 +4922,16 @@ body.sidebar-hidden .side-nav {
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Content expands to fill — just the icon bar (~60px) remains */
-body.sidebar-hidden #id-right,
+/* Main container: override native 300px margin-left to just icon bar width */
 body.sidebar-hidden #id-container {
 	margin-left: 60px !important;
 }
+
+/* Content area: no extra margin needed */
+body.sidebar-hidden #id-right {
+	margin-left: 0 !important;
+}
+
 body.sidebar-hidden header#id-top::after {
 	left: 60px !important;
 	width: calc(100% - 60px) !important;
