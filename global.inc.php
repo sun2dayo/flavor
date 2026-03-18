@@ -4862,29 +4862,32 @@ body.bodylogin #login-submit-wrapper input:hover {
 
 /* ============================================================================== */
 /*                                                                                */
-/*   PHASE 11.1 — SIDEBAR TOGGLE BUTTON                                          */
+/*   PHASE 11.1 — SIDEBAR PIN BUTTON (Integrated in Topbar)                       */
 /*                                                                                */
 /* ============================================================================== */
 
 #flavor-sidebar-toggle {
-	position: fixed;
-	top: 16px;
-	left: 100px;
-	z-index: 99999;
-	cursor: pointer;
-	color: #334155;
-	font-size: 1.2rem;
-	padding: 8px 10px;
-	background: #FFFFFF;
-	border-radius: 8px;
-	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-	transition: all 0.2s ease;
-	line-height: 1;
+	position: absolute !important;
+	top: 12px !important;
+	left: 16px !important;
+	z-index: 99999 !important;
+	cursor: pointer !important;
+	color: #64748B !important;
+	font-size: 0.9rem !important;
+	padding: 8px !important;
+	background: transparent !important;
+	border-radius: 50% !important;
+	transition: all 0.2s ease !important;
+	line-height: 1 !important;
 }
 #flavor-sidebar-toggle:hover {
-	background: #F1F5F9;
-	box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-	color: #6366F1;
+	color: #6366F1 !important;
+	background: rgba(99, 102, 241, 0.06) !important;
+}
+/* Pin rotation when unpinned */
+#flavor-sidebar-toggle.unpinned i {
+	transform: rotate(45deg);
+	color: #94A3B8 !important;
 }
 /* Hide toggle on mobile (mobile menu handles it) */
 @media (max-width: 1024px) {
@@ -4932,7 +4935,7 @@ body.sidebar-hidden #mainbody div.titre.inline-block {
 
 /* ============================================================================== */
 /*                                                                                */
-/*   PHASE 11.3 — DASHBOARD WIDGETS MODERNIZATION                                */
+/*   PHASE 11.3 — DEEP DASHBOARD MODERNIZATION                                   */
 /*                                                                                */
 /* ============================================================================== */
 
@@ -4980,4 +4983,80 @@ body.sidebar-hidden #mainbody div.titre.inline-block {
 .boxtable tr:hover {
 	background-color: #F8FAFC !important;
 }
+
+/* --- 11.3b Deep Metrics Grid (legacy table → modern cards) --- */
+
+/* Force grid layout on dashboard metric views */
+.boxbody, #db_view0 {
+	display: grid !important;
+	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
+	gap: 16px !important;
+	padding: 16px !important;
+}
+
+/* Flatten legacy table structure */
+#db_view0 tr, #db_view0 td, #db_view0 table.boxtable {
+	display: block !important;
+	width: 100% !important;
+	height: auto !important;
+	border: none !important;
+	background: transparent !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+/* Module metric cards */
+#db_view0 td.divmain {
+	display: flex !important;
+	flex-direction: column !important;
+	justify-content: space-between !important;
+	height: 100px !important;
+	padding: 16px !important;
+	border-radius: 12px !important;
+	border: 1px solid #E2E8F0 !important;
+	background: #FFFFFF !important;
+	box-shadow: 0 4px 6px -1px rgba(0,0,0,0.03) !important;
+	transition: all 0.2s ease !important;
+	overflow: hidden !important;
+}
+#db_view0 td.divmain:hover {
+	transform: translateY(-2px) !important;
+	border-color: #6366F1 !important;
+	box-shadow: 0 10px 15px -3px rgba(99,102,241,0.2) !important;
+}
+
+/* Hide legacy sub-metrics (small numbers below main) */
+#db_view0 td.divmain div span[class*="db"]:not(:first-child),
+#db_view0 td.divmain div i:not(:first-child) {
+	display: none !important;
+}
+
+/* Main metric number — large and clean */
+#db_view0 td.divmain span[class*="db-number"] {
+	font-size: 1.75rem !important;
+	font-weight: 700 !important;
+	color: #0F172A !important;
+	line-height: 1 !important;
+	margin: 0 !important;
+}
+
+/* Module label text */
+#db_view0 td.divmain span[class*="db-text"] {
+	font-size: 0.8125rem !important;
+	font-weight: 500 !important;
+	color: #475569 !important;
+	text-transform: capitalize !important;
+	line-height: 1.2 !important;
+}
+
+/* Icons modernization (indigo filter for legacy images) */
+#db_view0 td.divmain img.pictotitle,
+#db_view0 td.divmain span[class*="fa"] {
+	font-size: 1.5rem !important;
+	color: #6366F1 !important;
+	filter: invert(39%) sepia(87%) saturate(1478%) hue-rotate(213deg) brightness(97%) contrast(95%) !important;
+	margin-bottom: 8px !important;
+}
+
+
 

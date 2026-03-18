@@ -127,18 +127,31 @@ document.addEventListener("DOMContentLoaded", function () {
 			document.body.classList.add('sidebar-hidden');
 		}
 
-		// Create the toggle button
+		// Create the toggle button (Pin icon, inside topbar)
 		var toggleBtn = document.createElement('div');
 		toggleBtn.id = 'flavor-sidebar-toggle';
-		toggleBtn.title = 'Toggle Sidebar';
-		toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
-		document.body.appendChild(toggleBtn);
+		toggleBtn.title = 'Pin/Unpin Sidebar';
+		toggleBtn.innerHTML = '<i class="fas fa-thumbtack"></i>';
+
+		// Inject into topbar for clean integration
+		var topbar = document.getElementById('id-top');
+		if (topbar) {
+			topbar.appendChild(toggleBtn);
+		} else {
+			document.body.appendChild(toggleBtn);
+		}
+
+		// Set initial pin rotation state
+		if (document.body.classList.contains('sidebar-hidden')) {
+			toggleBtn.classList.add('unpinned');
+		}
 
 		// Click handler
 		toggleBtn.addEventListener('click', function () {
 			document.body.classList.toggle('sidebar-hidden');
 			var isHidden = document.body.classList.contains('sidebar-hidden');
 			localStorage.setItem('flavor-sidebar-collapsed', isHidden);
+			toggleBtn.classList.toggle('unpinned', isHidden);
 		});
 	})();
 
