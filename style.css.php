@@ -323,6 +323,20 @@ echo "\tbox-shadow: 0 6px 20px rgba(99,102,241,0.4) !important;\n";
 echo "\ttransform: translateY(-1px) !important;\n";
 echo "}\n";
 
+// NovaDX footer on login page
+echo "\n/* NovaDX Login Footer */\n";
+echo ".bodylogin .login_center::after,\n";
+echo ".bodylogin .login_vertical_align::after {\n";
+echo "\tcontent: 'By NovaDX' !important;\n";
+echo "\tdisplay: block !important;\n";
+echo "\ttext-align: center !important;\n";
+echo "\tpadding: 32px 0 16px !important;\n";
+echo "\tfont-size: 0.8rem !important;\n";
+echo "\tcolor: #94A3B8 !important;\n";
+echo "\tfont-weight: 500 !important;\n";
+echo "\tletter-spacing: 0.02em !important;\n";
+echo "}\n";
+
 // Restore original error reporting
 error_reporting($_original_error_reporting);
 
