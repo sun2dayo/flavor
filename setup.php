@@ -1,15 +1,32 @@
 <?php
 /**
- * Flavor Theme - One-time Setup Script
+ * Flavor Theme - Setup & Configuration Panel
  * 
- * Run this once after deploying the Flavor theme to enable:
+ * Features:
  * - ALLOW_THEME_JS: Loads flavor.js for Dolibarr→Dolisys text replacement
+ * - Menu Manager: Hide/show sidebar menu items via generated CSS
+ * - Security Lock: flavor.lock blocks access to this page
  * 
  * Usage: Visit http://your-dolibarr/theme/flavor/setup.php in your browser
  *        (you must be logged in as admin)
  */
 
-// Dolibarr bootstrap
+// ──────────────────────────────────────────────────────────────────────────────
+// PHASE 10.1 — Security Lock Check
+// ──────────────────────────────────────────────────────────────────────────────
+if (file_exists(__DIR__ . '/flavor.lock')) {
+    die('<div style="font-family: \'Inter\', -apple-system, sans-serif; background: #F8FAFC; height: 100vh; display: flex; align-items: center; justify-content: center; margin: 0;">
+            <div style="background: #FFF; padding: 48px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); text-align: center; max-width: 420px;">
+                <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #FEE2E2, #FECACA); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 28px;">🔒</div>
+                <h2 style="color: #1E293B; margin-top: 0; font-size: 1.25rem;">Setup Locked</h2>
+                <p style="color: #64748B; line-height: 1.6; margin-bottom: 0;">For security reasons, the configuration page is locked.<br>To access it, please delete the <strong style="color: #1E293B;">flavor.lock</strong> file inside the <code style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">theme/flavor/</code> directory.</p>
+            </div>
+         </div>');
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Dolibarr Bootstrap
+// ──────────────────────────────────────────────────────────────────────────────
 define('NOCSRFCHECK', 1);
 define('NOTOKENRENEWAL', 1);
 define('NOREQUIREMENU', 1);
@@ -21,83 +38,279 @@ require_once DOL_DOCUMENT_ROOT.'/core/lib/admin.lib.php';
 
 // Only admin can run this
 if (empty($user->admin)) {
-	accessforbidden('Admin access required');
+    accessforbidden('Admin access required');
 }
 
+// ──────────────────────────────────────────────────────────────────────────────
+// Menu definitions — all manageable sidebar menus
+// ──────────────────────────────────────────────────────────────────────────────
+$availableMenus = array(
+    'home'          => array('label' => 'Home / Dashboard',   'icon' => '🏠'),
+    'companies'     => array('label' => 'Third Parties',      'icon' => '🏢'),
+    'products'      => array('label' => 'Products/Services',  'icon' => '📦'),
+    'commercial'    => array('label' => 'Commercial',         'icon' => '🤝'),
+    'compta'        => array('label' => 'Billing / Payment',  'icon' => '💰'),
+    'bank'          => array('label' => 'Banking',            'icon' => '🏦'),
+    'accountancy'   => array('label' => 'Accountancy',        'icon' => '📊'),
+    'project'       => array('label' => 'Projects',           'icon' => '📋'),
+    'hrm'           => array('label' => 'HRM',                'icon' => '👥'),
+    'ticket'        => array('label' => 'Tickets',            'icon' => '🎫'),
+    'tools'         => array('label' => 'Tools',              'icon' => '🛠️'),
+    'members'       => array('label' => 'Members',            'icon' => '👤'),
+);
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Actions
+// ──────────────────────────────────────────────────────────────────────────────
 $action = GETPOST('action', 'aZ');
 $message = '';
 
+// Action: Activate white-labeling JS
 if ($action === 'activate') {
-	// Enable theme JS loading
-	$res1 = dolibarr_set_const($db, 'ALLOW_THEME_JS', '1', 'chaine', 0, 'Allow theme-level JS files (required for Flavor white-labeling)', 0);
-	
-	if ($res1 > 0) {
-		$message = '<div style="background:#10B981;color:#fff;padding:16px;border-radius:8px;margin:20px 0;font-size:1rem;">
-			✅ <strong>Flavor theme activated successfully!</strong><br>
-			ALLOW_THEME_JS has been enabled. The Dolibarr→Dolisys text replacement is now active.<br>
-			<a href="'.DOL_URL_ROOT.'/index.php" style="color:#fff;text-decoration:underline;">Go to Dashboard →</a>
-		</div>';
-	} else {
-		$message = '<div style="background:#EF4444;color:#fff;padding:16px;border-radius:8px;margin:20px 0;">
-			❌ <strong>Error:</strong> Could not save configuration. Check database permissions.
-		</div>';
-	}
+    $res1 = dolibarr_set_const($db, 'ALLOW_THEME_JS', '1', 'chaine', 0, 'Allow theme-level JS files (required for Flavor white-labeling)', 0);
+    if ($res1 > 0) {
+        $message = '<div class="alert alert-success">✅ <strong>White-labeling activated!</strong> ALLOW_THEME_JS has been enabled. Dolibarr→Dolisys text replacement is now active.</div>';
+    } else {
+        $message = '<div class="alert alert-error">❌ <strong>Error:</strong> Could not save configuration. Check database permissions.</div>';
+    }
 }
 
-// Check current status
+// Action: Save menu visibility
+if ($action === 'savemenus') {
+    $hiddenMenus = array();
+    foreach ($availableMenus as $key => $menu) {
+        if (GETPOST('hide_'.$key, 'alpha')) {
+            $hiddenMenus[] = $key;
+        }
+    }
+
+    // Generate the CSS file
+    $cssContent = "/* ============================================================================== */\n";
+    $cssContent .= "/* Auto-generated by Flavor Setup — Menu Visibility Manager                     */\n";
+    $cssContent .= "/* Generated: ".date('Y-m-d H:i:s')."                                          */\n";
+    $cssContent .= "/* DO NOT EDIT MANUALLY — changes will be overwritten by setup.php              */\n";
+    $cssContent .= "/* ============================================================================== */\n\n";
+
+    foreach ($hiddenMenus as $menuKey) {
+        $cssContent .= "/* Hide: ".($availableMenus[$menuKey]['label'] ?? $menuKey)." */\n";
+        $cssContent .= "#mainmenutd_".$menuKey.", \n";
+        $cssContent .= ".menu_contenu[id*=\"".$menuKey."\"], \n";
+        $cssContent .= "div.vmenu div[id*=\"".$menuKey."\"], \n";
+        $cssContent .= "li.tmenu[data-mainmenu=\"".$menuKey."\"], \n";
+        $cssContent .= "div.mainmenu.".$menuKey." { display: none !important; }\n\n";
+    }
+
+    $cssFile = __DIR__ . '/flavor_hidden.css';
+    if (file_put_contents($cssFile, $cssContent) !== false) {
+        $message = '<div class="alert alert-success">✅ <strong>Menu visibility saved!</strong> '.count($hiddenMenus).' menu(s) hidden. Changes are active immediately.</div>';
+    } else {
+        $message = '<div class="alert alert-error">❌ <strong>Error:</strong> Could not write flavor_hidden.css. Check file permissions on theme/flavor/ directory.</div>';
+    }
+}
+
+// Action: Lock setup page
+if ($action === 'lock') {
+    if (file_put_contents(__DIR__ . '/flavor.lock', 'Locked on '.date('Y-m-d H:i:s').' by '.$user->login) !== false) {
+        $message = '<div class="alert alert-success">🔒 <strong>Setup locked!</strong> This page will be inaccessible until you delete the <code>flavor.lock</code> file.</div>';
+    } else {
+        $message = '<div class="alert alert-error">❌ <strong>Error:</strong> Could not create lock file. Check file permissions.</div>';
+    }
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// Read current state
+// ──────────────────────────────────────────────────────────────────────────────
 $jsEnabled = getDolGlobalString('ALLOW_THEME_JS');
+
+// Read currently hidden menus from flavor_hidden.css
+$currentlyHidden = array();
+$cssFile = __DIR__ . '/flavor_hidden.css';
+if (file_exists($cssFile)) {
+    $content = file_get_contents($cssFile);
+    foreach ($availableMenus as $key => $menu) {
+        if (strpos($content, '#mainmenutd_'.$key) !== false) {
+            $currentlyHidden[$key] = true;
+        }
+    }
+}
 
 ?>
 <!DOCTYPE html>
 <html>
 <head>
-<title>Flavor Theme Setup - Dolisys</title>
+<title>Flavor Theme Setup — Dolisys</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-	body { font-family: 'Inter', -apple-system, sans-serif; background: #F8FAFC; margin: 0; padding: 40px; color: #1E293B; }
-	.container { max-width: 600px; margin: 0 auto; }
-	.card { background: #fff; border-radius: 16px; padding: 40px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-	h1 { font-size: 1.5rem; margin-bottom: 8px; }
-	.subtitle { color: #64748B; margin-bottom: 32px; }
-	.status { padding: 12px 16px; border-radius: 8px; margin-bottom: 24px; font-weight: 500; }
-	.status.ok { background: #ECFDF5; color: #065F46; }
-	.status.pending { background: #FEF3C7; color: #92400E; }
-	.btn { display: inline-block; background: linear-gradient(135deg, #6366F1, #818CF8); color: #fff; border: none;
-		   padding: 12px 32px; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;
-		   text-decoration: none; transition: all 0.2s; }
-	.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99,102,241,0.3); }
-	.checklist { list-style: none; padding: 0; }
-	.checklist li { padding: 8px 0; border-bottom: 1px solid #F1F5F9; }
-	.checklist li::before { content: "✓"; color: #10B981; font-weight: bold; margin-right: 8px; }
-	.checklist li.pending::before { content: "○"; color: #F59E0B; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background: #F1F5F9; color: #1E293B; min-height: 100vh; }
+
+    /* Top bar */
+    .topbar { background: #FFFFFF; border-bottom: 1px solid #E2E8F0; padding: 16px 32px; display: flex; align-items: center; gap: 12px; }
+    .topbar-logo { width: 32px; height: 32px; background: linear-gradient(135deg, #6366F1, #8B5CF6); border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #FFF; font-weight: 700; font-size: 14px; }
+    .topbar h1 { font-size: 1.1rem; font-weight: 700; }
+    .topbar .version { color: #94A3B8; font-size: 0.75rem; margin-left: 8px; background: #F1F5F9; padding: 2px 8px; border-radius: 4px; }
+
+    /* Layout */
+    .container { max-width: 760px; margin: 32px auto; padding: 0 24px; }
+
+    /* Cards */
+    .card { background: #FFFFFF; border-radius: 16px; padding: 32px; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04); border: 1px solid #F1F5F9; margin-bottom: 24px; }
+    .card-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid #F1F5F9; }
+    .card-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .card-icon.indigo { background: linear-gradient(135deg, #EEF2FF, #E0E7FF); }
+    .card-icon.amber { background: linear-gradient(135deg, #FFFBEB, #FEF3C7); }
+    .card-icon.red { background: linear-gradient(135deg, #FEF2F2, #FEE2E2); }
+    .card-title { font-size: 1.05rem; font-weight: 700; }
+    .card-subtitle { font-size: 0.8rem; color: #94A3B8; margin-top: 2px; }
+
+    /* Alerts */
+    .alert { padding: 14px 18px; border-radius: 10px; margin-bottom: 20px; font-size: 0.9rem; line-height: 1.5; }
+    .alert-success { background: #ECFDF5; color: #065F46; border: 1px solid #A7F3D0; }
+    .alert-error { background: #FEF2F2; color: #991B1B; border: 1px solid #FECACA; }
+    .alert code { background: rgba(0,0,0,0.06); padding: 1px 5px; border-radius: 3px; font-size: 0.85em; }
+
+    /* Status list */
+    .checklist { list-style: none; padding: 0; }
+    .checklist li { padding: 10px 0; border-bottom: 1px solid #F8FAFC; display: flex; align-items: center; gap: 10px; font-size: 0.9rem; }
+    .checklist li:last-child { border-bottom: none; }
+    .check-icon { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; }
+    .check-icon.ok { background: #ECFDF5; color: #059669; }
+    .check-icon.pending { background: #FEF3C7; color: #D97706; }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 10px 24px; border-radius: 10px; font-size: 0.9rem; font-weight: 600; cursor: pointer; border: none; text-decoration: none; transition: all 0.2s; font-family: inherit; }
+    .btn-primary { background: linear-gradient(135deg, #6366F1, #818CF8); color: #FFF; box-shadow: 0 4px 12px rgba(99,102,241,0.25); }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(99,102,241,0.35); }
+    .btn-success { background: linear-gradient(135deg, #059669, #10B981); color: #FFF; box-shadow: 0 4px 12px rgba(16,185,129,0.25); }
+    .btn-success:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(16,185,129,0.35); }
+    .btn-danger { background: linear-gradient(135deg, #DC2626, #EF4444); color: #FFF; box-shadow: 0 4px 12px rgba(239,68,68,0.25); }
+    .btn-danger:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(239,68,68,0.35); }
+    .btn-outline { background: #FFF; color: #475569; border: 1px solid #E2E8F0; box-shadow: none; }
+    .btn-outline:hover { background: #F8FAFC; border-color: #CBD5E1; }
+    .btn-group { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+
+    /* Menu grid */
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+    .menu-item { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-radius: 10px; border: 1px solid #E2E8F0; background: #FAFBFC; transition: all 0.15s; cursor: pointer; }
+    .menu-item:hover { border-color: #CBD5E1; background: #F8FAFC; }
+    .menu-item.checked { border-color: #FCA5A5; background: #FEF2F2; }
+    .menu-item input[type="checkbox"] { -webkit-appearance: none; appearance: none; width: 18px; height: 18px; border: 2px solid #CBD5E1; border-radius: 5px; cursor: pointer; flex-shrink: 0; position: relative; transition: all 0.15s; }
+    .menu-item input[type="checkbox"]:checked { background: #EF4444; border-color: #EF4444; }
+    .menu-item input[type="checkbox"]:checked::after { content: '✕'; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); color: #FFF; font-size: 11px; font-weight: 700; }
+    .menu-item-icon { font-size: 16px; }
+    .menu-item-label { font-size: 0.85rem; font-weight: 500; }
+
+    /* Footer */
+    .footer { text-align: center; padding: 24px; color: #94A3B8; font-size: 0.8rem; }
+    .footer a { color: #6366F1; text-decoration: none; }
 </style>
 </head>
 <body>
-<div class="container">
-	<div class="card">
-		<h1>🎨 Flavor Theme Setup</h1>
-		<p class="subtitle">One-time configuration for white-labeling</p>
-		
-		<?php echo $message; ?>
-		
-		<h3>Status</h3>
-		<ul class="checklist">
-			<li>Theme files deployed</li>
-			<li>Logo files in theme/flavor/img/</li>
-			<li>CSS white-labeling active</li>
-			<li class="<?php echo $jsEnabled ? '' : 'pending'; ?>">
-				JS text replacement (Dolibarr → Dolisys): 
-				<strong><?php echo $jsEnabled ? 'Active' : 'Pending activation'; ?></strong>
-			</li>
-		</ul>
-		
-		<?php if (!$jsEnabled): ?>
-		<p style="margin-top:24px;">Click below to enable the JavaScript white-labeling (replaces all "Dolibarr" text with "Dolisys"):</p>
-		<a href="?action=activate" class="btn">🚀 Activate White-labeling</a>
-		<?php else: ?>
-		<p style="margin-top:24px;color:#10B981;font-weight:600;">All set! White-labeling is fully active.</p>
-		<a href="<?php echo DOL_URL_ROOT; ?>/index.php" class="btn">Go to Dashboard →</a>
-		<?php endif; ?>
-	</div>
+
+<!-- Top Bar -->
+<div class="topbar">
+    <div class="topbar-logo">F</div>
+    <h1>Flavor Setup</h1>
+    <span class="version">v1.0</span>
 </div>
+
+<div class="container">
+    <?php echo $message; ?>
+
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <!-- CARD 1: White-labeling Status -->
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon indigo">🎨</div>
+            <div>
+                <div class="card-title">Theme Status</div>
+                <div class="card-subtitle">White-labeling & branding configuration</div>
+            </div>
+        </div>
+
+        <ul class="checklist">
+            <li><span class="check-icon ok">✓</span> Theme files deployed</li>
+            <li><span class="check-icon ok">✓</span> Logo files in theme/flavor/img/</li>
+            <li><span class="check-icon ok">✓</span> CSS white-labeling active</li>
+            <li>
+                <span class="check-icon <?php echo $jsEnabled ? 'ok' : 'pending'; ?>"><?php echo $jsEnabled ? '✓' : '○'; ?></span>
+                JS text replacement (Dolibarr → Dolisys):
+                <strong><?php echo $jsEnabled ? 'Active' : 'Pending'; ?></strong>
+            </li>
+        </ul>
+
+        <?php if (!$jsEnabled): ?>
+        <div class="btn-group">
+            <a href="?action=activate" class="btn btn-primary">🚀 Activate White-labeling</a>
+        </div>
+        <?php else: ?>
+        <div class="btn-group">
+            <a href="<?php echo DOL_URL_ROOT; ?>/index.php" class="btn btn-outline">← Back to Dashboard</a>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <!-- CARD 2: Menu Manager -->
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon amber">📋</div>
+            <div>
+                <div class="card-title">Menu Manager</div>
+                <div class="card-subtitle">Select menus to hide from the sidebar navigation</div>
+            </div>
+        </div>
+
+        <form method="POST" action="?action=savemenus">
+            <div class="menu-grid">
+                <?php foreach ($availableMenus as $key => $menu):
+                    $isChecked = !empty($currentlyHidden[$key]);
+                ?>
+                <label class="menu-item <?php echo $isChecked ? 'checked' : ''; ?>" onclick="this.classList.toggle('checked')">
+                    <input type="checkbox" name="hide_<?php echo $key; ?>" value="1" <?php echo $isChecked ? 'checked' : ''; ?>>
+                    <span class="menu-item-icon"><?php echo $menu['icon']; ?></span>
+                    <span class="menu-item-label"><?php echo htmlspecialchars($menu['label']); ?></span>
+                </label>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-success">💾 Save Menu Visibility</button>
+                <?php if (file_exists($cssFile)): ?>
+                <span style="color: #94A3B8; font-size: 0.8rem; align-self: center;">
+                    Last saved: <?php echo date('d/m/Y H:i', filemtime($cssFile)); ?>
+                </span>
+                <?php endif; ?>
+            </div>
+        </form>
+    </div>
+
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <!-- CARD 3: Security Lock -->
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon red">🔐</div>
+            <div>
+                <div class="card-title">Security Lock</div>
+                <div class="card-subtitle">Lock this setup page after configuration is complete</div>
+            </div>
+        </div>
+
+        <p style="color: #64748B; font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px;">
+            Once you've finished configuring, lock this page to prevent unauthorized changes.
+            To unlock later, delete the <code style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">flavor.lock</code> file from the <code style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">theme/flavor/</code> directory.
+        </p>
+
+        <a href="?action=lock" class="btn btn-danger" onclick="return confirm('Are you sure? This will lock the setup page. You will need file system access to unlock it.');">🔒 Lock Setup Page</a>
+    </div>
+
+    <div class="footer">
+        Flavor Theme for <a href="<?php echo DOL_URL_ROOT; ?>/index.php">Dolisys</a> • Phase 10
+    </div>
+</div>
+
 </body>
 </html>
