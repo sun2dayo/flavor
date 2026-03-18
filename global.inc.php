@@ -4809,3 +4809,32 @@ body.takepossplitphp .splitsale {
 	overflow: hidden !important;
 }
 
+/* ============================================================================== */
+/*   PHASE 10.3 — Login Page Button Fix                                           */
+/* ============================================================================== */
+
+/* Login submit button — visible with NovaDX gradient */
+#login-submit-wrapper input.button,
+#login-submit-wrapper .button,
+.page_content_wrap input[type="submit"].button {
+	background: linear-gradient(135deg, #6366F1, #818CF8) !important;
+	color: #FFFFFF !important;
+	border: none !important;
+	border-radius: 10px !important;
+	padding: 12px 32px !important;
+	font-size: 1rem !important;
+	font-weight: 600 !important;
+	cursor: pointer !important;
+	transition: all 0.2s ease !important;
+	box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
+	letter-spacing: 0.02em !important;
+	width: 100% !important;
+}
+#login-submit-wrapper input.button:hover,
+#login-submit-wrapper .button:hover,
+.page_content_wrap input[type="submit"].button:hover {
+	background: linear-gradient(135deg, #4F46E5, #6366F1) !important;
+	box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
+	transform: translateY(-1px) !important;
+}
+
