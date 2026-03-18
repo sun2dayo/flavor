@@ -1,6 +1,7 @@
 <?php
 /**
  * Flavor Theme - Setup & Configuration Panel
+ * Copyright (C) 2025-2026  Octavio Daio  <ola@novadx.pt>  https://novadx.pt
  * 
  * Features:
  * - ALLOW_THEME_JS: Loads flavor.js for Dolibarr→Dolisys text replacement

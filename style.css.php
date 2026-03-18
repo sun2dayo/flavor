@@ -1,11 +1,11 @@
 <?php
-/* Copyright (C) 2025       DoliSaaS Theme             <dolisaas@custom.dev>
+/* Copyright (C) 2025-2026  Octavio Daio                <ola@novadx.pt>
  *
  * Theme Name:    Flavor
- * Theme URI:     https://github.com/dolisaas/flavor
+ * Theme URI:     https://github.com/sun2dayo/flavor
  * Description:   A modern SaaS-style theme for Dolibarr ERP/CRM.
  * Version:       1.0.0
- * Author:        DoliSaaS
+ * Author:        Octavio Daio — NovaDX (novadx.pt)
  * Compatibility: Dolibarr 22.0.4+
  *
  * This program is free software; you can redistribute it and/or modify

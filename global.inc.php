@@ -1,5 +1,5 @@
 ﻿<?php
-/* Copyright (C) 2025       DoliSaaS Theme             <dolisaas@custom.dev>
+/* Copyright (C) 2025-2026  Octavio Daio                <ola@novadx.pt>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

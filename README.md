@@ -116,4 +116,5 @@ This theme is distributed under the **GNU General Public License v3.0**.
 
 ## 👨‍💻 Author
 
-**DoliSaaS** — Custom Dolibarr themes and modules.
+**Octavio Daio** — [NovaDX](https://novadx.pt)
+📧 [ola@novadx.pt](mailto:ola@novadx.pt)
