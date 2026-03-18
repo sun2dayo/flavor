@@ -4910,7 +4910,8 @@ body.bodylogin #login-submit-wrapper input:hover {
 
 /* Hidden state: sidebar + side-nav removed from flow */
 body.sidebar-hidden #id-left,
-body.sidebar-hidden .side-nav {
+body.sidebar-hidden .side-nav,
+body.sidebar-hidden .side-nav-498 {
 	width: 0 !important;
 	min-width: 0 !important;
 	max-width: 0 !important;
@@ -4918,17 +4919,18 @@ body.sidebar-hidden .side-nav {
 	opacity: 0 !important;
 	padding: 0 !important;
 	margin: 0 !important;
+	left: 0 !important;
 	pointer-events: none !important;
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Main container: override native 300px margin-left to just icon bar width */
-body.sidebar-hidden #id-container {
+/* HIGH SPECIFICITY: override native #mainbody #id-container { margin-left: 300px } */
+body.sidebar-hidden #mainbody #id-container {
 	margin-left: 60px !important;
 }
 
-/* Content area: no extra margin needed */
-body.sidebar-hidden #id-right {
+/* Content area: no extra margin */
+body.sidebar-hidden #mainbody #id-right {
 	margin-left: 0 !important;
 }
 
