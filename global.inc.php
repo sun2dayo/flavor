@@ -4869,7 +4869,7 @@ body.bodylogin #login-submit-wrapper input:hover {
 #flavor-sidebar-toggle {
 	position: absolute !important;
 	top: 12px !important;
-	left: 16px !important;
+	left: 270px !important;
 	z-index: 99999 !important;
 	cursor: pointer !important;
 	color: #64748B !important;
