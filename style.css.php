@@ -325,12 +325,11 @@ echo "}\n";
 
 // NovaDX footer on login page
 echo "\n/* NovaDX Login Footer */\n";
-echo ".bodylogin .login_center::after,\n";
-echo ".bodylogin .login_vertical_align::after {\n";
+echo ".bodylogin form#login::after {\n";
 echo "\tcontent: 'By NovaDX' !important;\n";
 echo "\tdisplay: block !important;\n";
 echo "\ttext-align: center !important;\n";
-echo "\tpadding: 32px 0 16px !important;\n";
+echo "\tpadding: 24px 0 0 !important;\n";
 echo "\tfont-size: 0.8rem !important;\n";
 echo "\tcolor: #94A3B8 !important;\n";
 echo "\tfont-weight: 500 !important;\n";
