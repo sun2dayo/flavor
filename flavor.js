@@ -110,6 +110,39 @@ document.addEventListener("DOMContentLoaded", function () {
 	})();
 
 	// =====================================================================
+	// PART 2.5: SIDEBAR TOGGLE (Pin/Unpin second sidebar)
+	// =====================================================================
+
+	(function initSidebarToggle() {
+		// Skip login, public pages, and TakePOS
+		if (document.body.classList.contains('bodylogin') ||
+			document.body.classList.contains('bodytakepos') ||
+			document.querySelector('.backgreypublicpayment') ||
+			document.querySelector('.publicnewmemberform')) {
+			return;
+		}
+
+		// Restore saved state IMMEDIATELY (before render)
+		if (localStorage.getItem('flavor-sidebar-collapsed') === 'true') {
+			document.body.classList.add('sidebar-hidden');
+		}
+
+		// Create the toggle button
+		var toggleBtn = document.createElement('div');
+		toggleBtn.id = 'flavor-sidebar-toggle';
+		toggleBtn.title = 'Toggle Sidebar';
+		toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+		document.body.appendChild(toggleBtn);
+
+		// Click handler
+		toggleBtn.addEventListener('click', function () {
+			document.body.classList.toggle('sidebar-hidden');
+			var isHidden = document.body.classList.contains('sidebar-hidden');
+			localStorage.setItem('flavor-sidebar-collapsed', isHidden);
+		});
+	})();
+
+	// =====================================================================
 	// PART 3: MOBILE MENU (only on internal pages)
 	// =====================================================================
 

@@ -4860,3 +4860,124 @@ body.bodylogin #login-submit-wrapper input:hover {
 	transform: translateY(-1px) !important;
 }
 
+/* ============================================================================== */
+/*                                                                                */
+/*   PHASE 11.1 — SIDEBAR TOGGLE BUTTON                                          */
+/*                                                                                */
+/* ============================================================================== */
+
+#flavor-sidebar-toggle {
+	position: fixed;
+	top: 16px;
+	left: 100px;
+	z-index: 99999;
+	cursor: pointer;
+	color: #334155;
+	font-size: 1.2rem;
+	padding: 8px 10px;
+	background: #FFFFFF;
+	border-radius: 8px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+	transition: all 0.2s ease;
+	line-height: 1;
+}
+#flavor-sidebar-toggle:hover {
+	background: #F1F5F9;
+	box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+	color: #6366F1;
+}
+/* Hide toggle on mobile (mobile menu handles it) */
+@media (max-width: 1024px) {
+	#flavor-sidebar-toggle {
+		display: none !important;
+	}
+}
+
+
+/* ============================================================================== */
+/*                                                                                */
+/*   PHASE 11.2 — SIDEBAR COLLAPSE ANIMATION                                     */
+/*                                                                                */
+/* ============================================================================== */
+
+/* Smooth transitions for all affected elements */
+#id-left, .side-nav, #id-right, #id-container, header#id-top::after, div.titre:first-of-type {
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+/* Hidden state: sidebar slides off-screen */
+body.sidebar-hidden #id-left,
+body.sidebar-hidden .side-nav {
+	transform: translateX(-220px) !important;
+	opacity: 0 !important;
+	pointer-events: none !important;
+}
+
+/* Content expands to fill (only 80px icon bar remains) */
+body.sidebar-hidden #id-right,
+body.sidebar-hidden #id-container {
+	margin-left: 80px !important;
+}
+body.sidebar-hidden header#id-top::after {
+	left: 80px !important;
+	width: calc(100% - 80px) !important;
+}
+
+/* Page title follows the movement */
+body.sidebar-hidden #id-right div.titre:first-child,
+body.sidebar-hidden #mainbody div.titre.inline-block {
+	left: 150px !important;
+}
+
+
+/* ============================================================================== */
+/*                                                                                */
+/*   PHASE 11.3 — DASHBOARD WIDGETS MODERNIZATION                                */
+/*                                                                                */
+/* ============================================================================== */
+
+/* Widget cards */
+.box {
+	border: none !important;
+	box-shadow: 0 4px 15px rgba(0,0,0,0.03) !important;
+	border-radius: 16px !important;
+	margin-bottom: 24px !important;
+	background: #FFFFFF !important;
+	overflow: hidden !important;
+}
+
+/* Widget header */
+.boxhead {
+	background: #FFFFFF !important;
+	border-bottom: 1px solid #F1F5F9 !important;
+	padding: 16px 20px !important;
+	font-size: 0.85rem !important;
+	font-weight: 700 !important;
+	text-transform: uppercase !important;
+	letter-spacing: 0.05em !important;
+	color: #334155 !important;
+}
+
+/* Tables inside widgets */
+.boxtable {
+	width: 100% !important;
+	border-collapse: collapse !important;
+}
+.boxtable tr {
+	border-bottom: 1px solid #F8FAFC !important;
+}
+.boxtable tr:last-child {
+	border-bottom: none !important;
+}
+.boxtable td {
+	padding: 12px 20px !important;
+	font-size: 0.85rem !important;
+	color: #475569 !important;
+}
+
+/* Row hover effect */
+.boxtable tr.oddeven:hover,
+.boxtable tr:hover {
+	background-color: #F8FAFC !important;
+}
+
