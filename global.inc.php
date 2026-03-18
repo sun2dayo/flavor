@@ -4813,11 +4813,16 @@ body.takepossplitphp .splitsale {
 /*   PHASE 10.3 — Login Page Button Fix                                           */
 /* ============================================================================== */
 
-/* Login submit button — visible with NovaDX gradient */
-#login-submit-wrapper input.button,
-#login-submit-wrapper .button,
-.page_content_wrap input[type="submit"].button {
-	background: linear-gradient(135deg, #6366F1, #818CF8) !important;
+/* Login submit button — ultra-specific to override all inherited rules */
+body.bodylogin input.button,
+body.bodylogin input[type="submit"],
+body.bodylogin input[type="submit"].button,
+body.bodylogin #login-submit-wrapper input,
+body.bodylogin #login-submit-wrapper input.button,
+body.bodylogin .login_block_other input,
+body.bodylogin .page_content_wrap input[type="submit"] {
+	background-color: #6366F1 !important;
+	background-image: linear-gradient(135deg, #6366F1, #818CF8) !important;
 	color: #FFFFFF !important;
 	border: none !important;
 	border-radius: 10px !important;
@@ -4829,11 +4834,15 @@ body.takepossplitphp .splitsale {
 	box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3) !important;
 	letter-spacing: 0.02em !important;
 	width: 100% !important;
+	-webkit-appearance: none !important;
+	appearance: none !important;
 }
-#login-submit-wrapper input.button:hover,
-#login-submit-wrapper .button:hover,
-.page_content_wrap input[type="submit"].button:hover {
-	background: linear-gradient(135deg, #4F46E5, #6366F1) !important;
+body.bodylogin input.button:hover,
+body.bodylogin input[type="submit"]:hover,
+body.bodylogin input[type="submit"].button:hover,
+body.bodylogin #login-submit-wrapper input:hover {
+	background-color: #4F46E5 !important;
+	background-image: linear-gradient(135deg, #4F46E5, #6366F1) !important;
 	box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4) !important;
 	transform: translateY(-1px) !important;
 }
