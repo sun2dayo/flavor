@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /* Copyright (C) 2025-2026  Octavio Daio                <ola@novadx.pt>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -3617,7 +3617,7 @@ body.bodylogin,
 .bodylogin form#login input[type="submit"].button {
 	width: 100% !important;
 	height: 48px !important;
-	background: linear-gradient(135deg, var(--flavor-primary-500), #818CF8) !important;
+	background: linear-gradient(135deg, #6366F1, #818CF8) !important;
 	color: #FFFFFF !important;
 	border-radius: 8px !important;
 	font-size: 1rem !important;
