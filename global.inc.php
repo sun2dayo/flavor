@@ -3644,13 +3644,26 @@ body.bodylogin,
 	margin-right: auto !important;
 }
 .bodylogin a {
-	color: var(--flavor-primary-500) !important;
+	color: #6366F1 !important;
 	font-size: 0.8125rem !important;
 	text-decoration: none !important;
 }
 .bodylogin a:hover {
 	color: #4F46E5 !important;
 	text-decoration: underline !important;
+}
+
+/* NovaDX footer branding on login page */
+.bodylogin .login_center::after {
+	content: "By NovaDX";
+	display: block;
+	text-align: center;
+	padding: 32px 0 16px;
+	font-size: 0.8rem;
+	color: #94A3B8;
+	font-weight: 500;
+	letter-spacing: 0.02em;
+	cursor: pointer;
 }
 
 /* 10. Esconder elementos desnecessarios */
