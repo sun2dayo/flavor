@@ -19,7 +19,7 @@ if (file_exists(__DIR__ . '/flavor.lock')) {
             <div style="background: #FFF; padding: 48px; border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1); text-align: center; max-width: 420px;">
                 <div style="width: 64px; height: 64px; background: linear-gradient(135deg, #FEE2E2, #FECACA); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 28px;">🔒</div>
                 <h2 style="color: #1E293B; margin-top: 0; font-size: 1.25rem;">Setup Locked</h2>
-                <p style="color: #64748B; line-height: 1.6; margin-bottom: 0;">For security reasons, the configuration page is locked.<br>To access it, please delete the <strong style="color: #1E293B;">flavor.lock</strong> file inside the <code style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">theme/flavor/</code> directory.</p>
+                <p style="color: #64748B; line-height: 1.6; margin-bottom: 0;">For security reasons, the configuration page is locked.</p>
             </div>
          </div>');
 }
