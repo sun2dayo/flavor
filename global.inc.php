@@ -4908,28 +4908,33 @@ body.bodylogin #login-submit-wrapper input:hover {
 	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Hidden state: sidebar slides off-screen */
+/* Hidden state: sidebar removed from flow */
 body.sidebar-hidden #id-left,
 body.sidebar-hidden .side-nav {
-	transform: translateX(-220px) !important;
+	width: 0 !important;
+	min-width: 0 !important;
+	overflow: hidden !important;
 	opacity: 0 !important;
+	padding: 0 !important;
+	margin: 0 !important;
 	pointer-events: none !important;
+	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
 
-/* Content expands to fill (only 80px icon bar remains) */
+/* Content expands to fill — just the icon bar (~60px) remains */
 body.sidebar-hidden #id-right,
 body.sidebar-hidden #id-container {
-	margin-left: 80px !important;
+	margin-left: 60px !important;
 }
 body.sidebar-hidden header#id-top::after {
-	left: 80px !important;
-	width: calc(100% - 80px) !important;
+	left: 60px !important;
+	width: calc(100% - 60px) !important;
 }
 
 /* Page title follows the movement */
 body.sidebar-hidden #id-right div.titre:first-child,
 body.sidebar-hidden #mainbody div.titre.inline-block {
-	left: 150px !important;
+	left: 120px !important;
 }
 
 
