@@ -2029,6 +2029,19 @@ span.badge.badge-info {
 	color: #FFFFFF !important;
 }
 
+/* Dashboard card icons — shift PNG colors to indigo theme */
+.box-flex-item img.inline-block[src*="object_"],
+.fichecenter img.inline-block[src*="object_"],
+a.dashboardlineindicator img,
+div.dashboardlineindicator img,
+.boxstatsindicator img,
+img.dashboardimg,
+img[src*="object_"][width="56"],
+img[src*="object_"][height="56"],
+.fichecenter .titre img[src*="object_"] {
+	filter: grayscale(1) sepia(1) hue-rotate(210deg) saturate(4) brightness(0.75) !important;
+}
+
 
 /* ==========================================================================
    P3-8. BREADCRUMBS & MISC
