@@ -5148,7 +5148,7 @@ div.tmenudiv,
 /* --- Smooth transitions for sidebar --- */
 #id-left {
 	transition: width 0.25s ease, min-width 0.25s ease, opacity 0.2s ease !important;
-	overflow: hidden !important;
+	overflow-y: auto !important;
 }
 
 /* --- Collapsed state: hide #id-left --- */
