@@ -386,65 +386,21 @@ if (!empty($customPrimary) && $customPrimary !== '#6366F1') {
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
-// DYNAMIC CSS: FontAwesome sidebar icons from llx_flavor_config
+// DYNAMIC CSS: Style native FA sidebar icons (Dolibarr already renders FA <span>)
 // ──────────────────────────────────────────────────────────────────────────────
-// FA icon unicode lookup (common icons)
-$faUnicodeMap = array(
-    'fa-tachometer-alt' => '\f3fd', 'fa-building' => '\f1ad', 'fa-box-open' => '\f49e',
-    'fa-briefcase' => '\f0b1', 'fa-file-invoice-dollar' => '\f571', 'fa-book' => '\f02d',
-    'fa-university' => '\f19c', 'fa-project-diagram' => '\f542', 'fa-users' => '\f0c0',
-    'fa-life-ring' => '\f1cd', 'fa-tools' => '\f7d9', 'fa-id-card' => '\f2c2',
-    'fa-puzzle-piece' => '\f12e', 'fa-cash-register' => '\f788', 'fa-home' => '\f015',
-    'fa-cog' => '\f013', 'fa-cogs' => '\f085', 'fa-chart-line' => '\f201',
-    'fa-chart-bar' => '\f080', 'fa-shopping-cart' => '\f07a', 'fa-dollar-sign' => '\f155',
-    'fa-handshake' => '\f2b5', 'fa-user-tie' => '\f508', 'fa-warehouse' => '\f494',
-    'fa-store' => '\f54e', 'fa-ticket-alt' => '\f3ff', 'fa-wrench' => '\f0ad',
-    'fa-calendar-alt' => '\f073', 'fa-file-alt' => '\f15c', 'fa-cubes' => '\f1b3',
-    'fa-industry' => '\f275', 'fa-coins' => '\f51e', 'fa-receipt' => '\f543',
-    'fa-user' => '\f007', 'fa-address-card' => '\f2bb', 'fa-sitemap' => '\f0e8',
-    'fa-tasks' => '\f0ae', 'fa-headset' => '\f590', 'fa-comments' => '\f086',
-    'fa-envelope' => '\f0e0', 'fa-at' => '\f1fa', 'fa-list' => '\f03a',
-);
+// Dolibarr renders icons as <span class="fas fa-building"> inside .mainmenu divs.
+// We just override their inline color + size — no ::before duplication needed.
 
-if (is_object($db)) {
-    $sql_fc = "SELECT menu_key, fa_icon FROM ".MAIN_DB_PREFIX."flavor_config WHERE entity=1 AND fa_icon != ''";
-    $resql_fc = $db->query($sql_fc);
-    if ($resql_fc) {
-        echo "\n/* Dynamic FA Sidebar Icons from llx_flavor_config */\n";
-        while ($obj_fc = $db->fetch_object($resql_fc)) {
-            $menuKey = $obj_fc->menu_key;
-            $faClass = $obj_fc->fa_icon;
+echo "\n/* Override native Dolibarr FA icon colors in sidebar to white */\n";
+echo "#tmenu_tooltip .mainmenu.topmenuimage > span[class*=\"fa-\"] {\n";
+echo "\tcolor: rgba(255,255,255,0.85) !important;\n";
+echo "\tfont-size: 18px !important;\n";
+echo "\tfilter: none !important;\n";
+echo "}\n";
+echo "#tmenu_tooltip .mainmenu.topmenuimage {\n";
+echo "\tbackground-image: none !important;\n";
+echo "}\n";
 
-            // Extract the icon name from the class (e.g., "fas fa-building" -> "fa-building")
-            $iconName = '';
-            if (preg_match('/(fa-[a-z0-9-]+)/', $faClass, $matches)) {
-                $iconName = $matches[1];
-            }
-
-            // Get unicode value
-            $unicode = isset($faUnicodeMap[$iconName]) ? $faUnicodeMap[$iconName] : '';
-
-            if (!empty($unicode)) {
-                // Hide original PNG icon
-                echo "#mainmenutd_".$menuKey." .mainmenu.".$menuKey." {\n";
-                echo "\tbackground-image: none !important;\n";
-                echo "\tposition: relative;\n";
-                echo "}\n";
-                // Display FA icon via ::before
-                echo "#mainmenutd_".$menuKey." .mainmenu.".$menuKey."::before {\n";
-                echo "\tcontent: '".$unicode."';\n";
-                echo "\tfont-family: 'Font Awesome 5 Free';\n";
-                echo "\tfont-weight: 900;\n";
-                echo "\tfont-size: 18px;\n";
-                echo "\tcolor: rgba(255,255,255,0.85);\n";
-                echo "\tdisplay: block;\n";
-                echo "\ttext-align: center;\n";
-                echo "\tline-height: 1;\n";
-                echo "}\n";
-            }
-        }
-    }
-}
 
 // ──────────────────────────────────────────────────────────────────────────────
 // DYNAMIC CSS: Topbar title data attribute (read by flavor.js)
