@@ -28,7 +28,7 @@ if (file_exists(__DIR__ . '/flavor.lock')) {
 // ──────────────────────────────────────────────────────────────────────────────
 // Dolibarr Bootstrap
 // ──────────────────────────────────────────────────────────────────────────────
-define('NOCSRFCHECK', 1);
+// CSRF: No longer disabling token check — forms now include newToken()
 define('NOTOKENRENEWAL', 1);
 define('NOREQUIREMENU', 1);
 define('NOREQUIREHTML', 1);
@@ -325,7 +325,7 @@ if (file_exists($cssFile)) {
 
         <?php if (!$jsEnabled): ?>
         <div class="btn-group">
-            <a href="?action=activate" class="btn btn-primary">🚀 Activate White-labeling</a>
+            <a href="?action=activate&token=<?php echo newToken(); ?>" class="btn btn-primary">🚀 Activate White-labeling</a>
         </div>
         <?php else: ?>
         <div class="btn-group">
@@ -347,6 +347,7 @@ if (file_exists($cssFile)) {
         </div>
 
         <form method="POST" action="?action=savemenus">
+            <input type="hidden" name="token" value="<?php echo newToken(); ?>">
             <div class="menu-grid">
                 <?php foreach ($availableMenus as $key => $menu):
                     $isChecked = !empty($currentlyHidden[$key]);
@@ -383,6 +384,7 @@ if (file_exists($cssFile)) {
         </div>
 
         <form method="POST" action="?action=saveadmintools">
+            <input type="hidden" name="token" value="<?php echo newToken(); ?>">
             <div class="section-label">System Information</div>
             <div class="menu-grid">
                 <?php foreach ($adminToolsSubmenus as $key => $item):
@@ -419,6 +421,7 @@ if (file_exists($cssFile)) {
         </div>
 
         <form method="POST" action="?action=savemoduletabs">
+            <input type="hidden" name="token" value="<?php echo newToken(); ?>">
             <div class="menu-grid">
                 <?php foreach ($moduleTabs as $key => $tab):
                     $isChecked = !empty($currentlyHiddenMT[$key]);
@@ -454,7 +457,7 @@ if (file_exists($cssFile)) {
             To unlock later, delete the <code style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">flavor.lock</code> file from the <code style="background: #F1F5F9; padding: 2px 6px; border-radius: 4px; font-size: 0.85em;">theme/flavor/</code> directory.
         </p>
 
-        <a href="?action=lock" class="btn btn-danger" onclick="return confirm('Are you sure? This will lock the setup page. You will need file system access to unlock it.');">🔒 Lock Setup Page</a>
+        <a href="?action=lock&token=<?php echo newToken(); ?>" class="btn btn-danger" onclick="return confirm('Are you sure? This will lock the setup page. You will need file system access to unlock it.');">🔒 Lock Setup Page</a>
     </div>
 
     <div class="footer">
