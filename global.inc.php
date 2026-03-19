@@ -2020,6 +2020,15 @@ div.info-box:hover {
 	line-height: 1.4 !important;
 }
 
+/* Dashboard number indicators — indigo instead of default blue */
+.badge-info,
+.classfortooltip.badge-info,
+span.badge.badge-info {
+	background-color: #6366F1 !important;
+	background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%) !important;
+	color: #FFFFFF !important;
+}
+
 
 /* ==========================================================================
    P3-8. BREADCRUMBS & MISC

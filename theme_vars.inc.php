@@ -123,7 +123,7 @@ $colorblind_deuteranopes_textWarning = '#e4e411';
 // Badge colors
 $badgePrimary           = '#6366F1';           // Indigo 500
 $badgeSecondary         = '#94A3B8';           // Slate 400
-$badgeInfo              = '#0EA5E9';           // Sky 500
+$badgeInfo              = '#6366F1';           // Indigo 500 (aligned with theme)
 $badgeSuccess           = '#10B981';           // Emerald 500
 $badgeWarning           = '#F59E0B';           // Amber 500
 $badgeDanger            = '#EF4444';           // Red 500
