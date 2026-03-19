@@ -339,6 +339,123 @@ echo "}\n";
 // Restore original error reporting
 error_reporting($_original_error_reporting);
 
+// ──────────────────────────────────────────────────────────────────────────────
+// DYNAMIC CSS: Primary color override from FLAVOR_PRIMARY_COLOR
+// ──────────────────────────────────────────────────────────────────────────────
+$customPrimary = getDolGlobalString('FLAVOR_PRIMARY_COLOR');
+if (!empty($customPrimary) && $customPrimary !== '#6366F1') {
+    // Convert hex to RGB for shade generation
+    $hex = ltrim($customPrimary, '#');
+    $r = hexdec(substr($hex, 0, 2));
+    $g = hexdec(substr($hex, 2, 2));
+    $b = hexdec(substr($hex, 4, 2));
+
+    // Generate lighter/darker shades
+    $mix = function($r, $g, $b, $factor, $base = 255) {
+        return array(
+            round($r + ($base - $r) * $factor),
+            round($g + ($base - $g) * $factor),
+            round($b + ($base - $b) * $factor),
+        );
+    };
+    $dark = function($r, $g, $b, $factor) {
+        return array(round($r * $factor), round($g * $factor), round($b * $factor));
+    };
+
+    $s50  = $mix($r,$g,$b, 0.92);
+    $s100 = $mix($r,$g,$b, 0.85);
+    $s200 = $mix($r,$g,$b, 0.70);
+    $s300 = $mix($r,$g,$b, 0.50);
+    $s400 = $mix($r,$g,$b, 0.25);
+    $s600 = $dark($r,$g,$b, 0.85);
+    $s700 = $dark($r,$g,$b, 0.70);
+
+    $toHex = function($rgb) { return sprintf('#%02x%02x%02x', $rgb[0], $rgb[1], $rgb[2]); };
+
+    echo "\n/* Dynamic Primary Color Override */\n";
+    echo ":root {\n";
+    echo "\t--flavor-primary-50:  ".$toHex($s50)." !important;\n";
+    echo "\t--flavor-primary-100: ".$toHex($s100)." !important;\n";
+    echo "\t--flavor-primary-200: ".$toHex($s200)." !important;\n";
+    echo "\t--flavor-primary-300: ".$toHex($s300)." !important;\n";
+    echo "\t--flavor-primary-400: ".$toHex($s400)." !important;\n";
+    echo "\t--flavor-primary-500: ".$customPrimary." !important;\n";
+    echo "\t--flavor-primary-600: ".$toHex($s600)." !important;\n";
+    echo "\t--flavor-primary-700: ".$toHex($s700)." !important;\n";
+    echo "}\n";
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// DYNAMIC CSS: FontAwesome sidebar icons from llx_flavor_config
+// ──────────────────────────────────────────────────────────────────────────────
+// FA icon unicode lookup (common icons)
+$faUnicodeMap = array(
+    'fa-tachometer-alt' => '\f3fd', 'fa-building' => '\f1ad', 'fa-box-open' => '\f49e',
+    'fa-briefcase' => '\f0b1', 'fa-file-invoice-dollar' => '\f571', 'fa-book' => '\f02d',
+    'fa-university' => '\f19c', 'fa-project-diagram' => '\f542', 'fa-users' => '\f0c0',
+    'fa-life-ring' => '\f1cd', 'fa-tools' => '\f7d9', 'fa-id-card' => '\f2c2',
+    'fa-puzzle-piece' => '\f12e', 'fa-cash-register' => '\f788', 'fa-home' => '\f015',
+    'fa-cog' => '\f013', 'fa-cogs' => '\f085', 'fa-chart-line' => '\f201',
+    'fa-chart-bar' => '\f080', 'fa-shopping-cart' => '\f07a', 'fa-dollar-sign' => '\f155',
+    'fa-handshake' => '\f2b5', 'fa-user-tie' => '\f508', 'fa-warehouse' => '\f494',
+    'fa-store' => '\f54e', 'fa-ticket-alt' => '\f3ff', 'fa-wrench' => '\f0ad',
+    'fa-calendar-alt' => '\f073', 'fa-file-alt' => '\f15c', 'fa-cubes' => '\f1b3',
+    'fa-industry' => '\f275', 'fa-coins' => '\f51e', 'fa-receipt' => '\f543',
+    'fa-user' => '\f007', 'fa-address-card' => '\f2bb', 'fa-sitemap' => '\f0e8',
+    'fa-tasks' => '\f0ae', 'fa-headset' => '\f590', 'fa-comments' => '\f086',
+    'fa-envelope' => '\f0e0', 'fa-at' => '\f1fa', 'fa-list' => '\f03a',
+);
+
+if (is_object($db)) {
+    $sql_fc = "SELECT menu_key, fa_icon FROM ".MAIN_DB_PREFIX."flavor_config WHERE entity=1 AND fa_icon != ''";
+    $resql_fc = $db->query($sql_fc);
+    if ($resql_fc) {
+        echo "\n/* Dynamic FA Sidebar Icons from llx_flavor_config */\n";
+        while ($obj_fc = $db->fetch_object($resql_fc)) {
+            $menuKey = $obj_fc->menu_key;
+            $faClass = $obj_fc->fa_icon;
+
+            // Extract the icon name from the class (e.g., "fas fa-building" -> "fa-building")
+            $iconName = '';
+            if (preg_match('/(fa-[a-z0-9-]+)/', $faClass, $matches)) {
+                $iconName = $matches[1];
+            }
+
+            // Get unicode value
+            $unicode = isset($faUnicodeMap[$iconName]) ? $faUnicodeMap[$iconName] : '';
+
+            if (!empty($unicode)) {
+                // Hide original PNG icon
+                echo "#mainmenutd_".$menuKey." .mainmenu.".$menuKey." {\n";
+                echo "\tbackground-image: none !important;\n";
+                echo "\tposition: relative;\n";
+                echo "}\n";
+                // Display FA icon via ::before
+                echo "#mainmenutd_".$menuKey." .mainmenu.".$menuKey."::before {\n";
+                echo "\tcontent: '".$unicode."';\n";
+                echo "\tfont-family: 'Font Awesome 5 Free';\n";
+                echo "\tfont-weight: 900;\n";
+                echo "\tfont-size: 18px;\n";
+                echo "\tcolor: rgba(255,255,255,0.85);\n";
+                echo "\tdisplay: block;\n";
+                echo "\ttext-align: center;\n";
+                echo "\tline-height: 1;\n";
+                echo "}\n";
+            }
+        }
+    }
+}
+
+// ──────────────────────────────────────────────────────────────────────────────
+// DYNAMIC CSS: Topbar title data attribute (read by flavor.js)
+// ──────────────────────────────────────────────────────────────────────────────
+$topbarTitle = getDolGlobalString('FLAVOR_TOPBAR_TITLE');
+if (!empty($topbarTitle)) {
+    echo "\n/* Topbar title data carrier */\n";
+    echo ":root { --flavor-topbar-title: '".addslashes($topbarTitle)."'; }\n";
+}
+
+
 if (is_object($db)) {
 	$db->close();
 }

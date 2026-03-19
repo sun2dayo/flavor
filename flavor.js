@@ -110,6 +110,46 @@ document.addEventListener("DOMContentLoaded", function () {
 	})();
 
 	// =====================================================================
+	// PART 2.5: TOPBAR TITLE INJECTION
+	// =====================================================================
+
+	(function initTopbarTitle() {
+		// Skip login, public pages, and TakePOS
+		if (document.body.classList.contains('bodylogin') ||
+			document.body.classList.contains('bodytakepos') ||
+			document.querySelector('.backgreypublicpayment') ||
+			document.querySelector('.publicnewmemberform')) {
+			return;
+		}
+
+		// Read title from CSS variable (set by style.css.php from FLAVOR_TOPBAR_TITLE)
+		var rootStyles = getComputedStyle(document.documentElement);
+		var titleValue = rootStyles.getPropertyValue('--flavor-topbar-title').trim();
+
+		// Remove quotes from CSS string value
+		if (titleValue && titleValue.length > 2) {
+			titleValue = titleValue.replace(/^['"]|['"]$/g, '');
+		}
+
+		if (!titleValue || titleValue === 'none') return;
+
+		var topbar = document.getElementById('id-top');
+		if (!topbar) return;
+
+		var titleDiv = document.createElement('div');
+		titleDiv.id = 'flavor-topbar-title';
+		titleDiv.textContent = titleValue;
+
+		// Insert after the search box area
+		var loginBlock = topbar.querySelector('.login_block');
+		if (loginBlock) {
+			topbar.insertBefore(titleDiv, loginBlock);
+		} else {
+			topbar.appendChild(titleDiv);
+		}
+	})();
+
+	// =====================================================================
 	// PART 3: MOBILE MENU (only on internal pages)
 	// =====================================================================
 

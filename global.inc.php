@@ -4987,4 +4987,117 @@ body.bodylogin #login-submit-wrapper input:hover {
 }
 
 
+/* ============================================================================== */
+/*                                                                                */
+/*   PHASE 12 — TOPBAR TITLE                                                      */
+/*                                                                                */
+/* ============================================================================== */
+
+#flavor-topbar-title {
+	font-size: 1.1rem !important;
+	font-weight: 600 !important;
+	color: var(--flavor-slate-800) !important;
+	margin-left: 20px !important;
+	white-space: nowrap !important;
+	letter-spacing: -0.01em !important;
+	flex-shrink: 0 !important;
+	order: 5 !important;
+}
+
+@media (max-width: 1024px) {
+	#flavor-topbar-title {
+		display: none !important;
+	}
+}
+
+
+/* ============================================================================== */
+/*                                                                                */
+/*   PHASE 12.1 — VENDUS-STYLE SIDEBAR POLISH                                     */
+/*                                                                                */
+/* ============================================================================== */
+
+/* Remove border between icon bar and submenu — continuous block */
+.side-nav {
+	border-left: none !important;
+	box-shadow: none !important;
+}
+div.tmenudiv,
+#tmenu_tooltip {
+	border-right: none !important;
+	box-shadow: none !important;
+}
+
+/* FA icons in submenu items — white translucent */
+.blockvmenu .menu_contenu a .fa,
+.blockvmenu .menu_contenu a i[class*="fa-"],
+.blockvmenu .menu_contenu a span[class*="fa-"],
+.blockvmenu .menu_titre a .fa,
+.blockvmenu .menu_titre a i[class*="fa-"],
+.blockvmenu .menu_titre a span[class*="fa-"],
+.blockvmenu .menu_contenu a img.pictotitle,
+.blockvmenu .menu_titre a img.pictotitle {
+	color: rgba(255,255,255,0.7) !important;
+	font-size: 14px !important;
+	margin-right: 8px !important;
+	width: 16px !important;
+	text-align: center !important;
+	filter: brightness(0) invert(1) !important;
+	opacity: 0.7 !important;
+}
+
+/* Submenu items — Vendus-style spacing and transitions */
+.blockvmenu .menu_contenu a {
+	display: flex !important;
+	align-items: center !important;
+	padding: 8px 16px 8px 18px !important;
+	margin: 1px 8px !important;
+	border-radius: 8px !important;
+	border-left: 3px solid transparent !important;
+	transition: all 0.15s ease !important;
+	font-size: 0.83rem !important;
+	color: rgba(255,255,255,0.75) !important;
+}
+
+/* Hover: subtle highlight */
+.blockvmenu .menu_contenu a:hover {
+	background: rgba(255,255,255,0.05) !important;
+	color: #FFFFFF !important;
+	border-left-color: rgba(255,255,255,0.2) !important;
+}
+.blockvmenu .menu_contenu a:hover .fa,
+.blockvmenu .menu_contenu a:hover i[class*="fa-"],
+.blockvmenu .menu_contenu a:hover img.pictotitle {
+	opacity: 1 !important;
+	color: #FFFFFF !important;
+}
+
+/* Active/selected item — Vendus accent */
+.blockvmenu .menu_contenu a.vsmmenuitema,
+.blockvmenu .menu_contenu .vsmmenuitema,
+.blockvmenu .menu_contenu li.active > a,
+.blockvmenu .menu_contenu a[style*="font-weight: bold"],
+.blockvmenu .menu_contenu a.vmenu.vmenusearchselectcombo {
+	background: rgba(255,255,255,0.08) !important;
+	color: #FFFFFF !important;
+	border-left-color: var(--flavor-primary-500, #6366F1) !important;
+	font-weight: 600 !important;
+}
+
+/* Section titles — cleaner Vendus style */
+.blockvmenu .menu_titre {
+	padding: 12px 16px 6px !important;
+	margin-top: 4px !important;
+}
+.blockvmenu .menu_titre a.vmenu,
+.blockvmenu .menu_titre span.vmenu {
+	font-size: 0.72rem !important;
+	font-weight: 700 !important;
+	text-transform: uppercase !important;
+	letter-spacing: 0.06em !important;
+	color: rgba(255,255,255,0.45) !important;
+}
+
+
+
 

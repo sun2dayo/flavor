@@ -110,6 +110,40 @@ if ($action === 'activate') {
     }
 }
 
+// Action: Save Preferences (topbar title + primary color)
+if ($action === 'saveprefs') {
+    $topbarTitle  = GETPOST('topbar_title', 'alphanohtml');
+    $primaryColor = GETPOST('primary_color', 'alphanohtml');
+    $r1 = dolibarr_set_const($db, 'FLAVOR_TOPBAR_TITLE', $topbarTitle, 'chaine', 0, 'Flavor theme — topbar title', 0);
+    $r2 = dolibarr_set_const($db, 'FLAVOR_PRIMARY_COLOR', $primaryColor, 'chaine', 0, 'Flavor theme — primary color override', 0);
+    if ($r1 > 0 && $r2 > 0) {
+        $message = '<div class="alert alert-success">✅ <strong>Preferences saved!</strong> Topbar title and color updated. Reload the app (Ctrl+Shift+R) to see changes.</div>';
+    } else {
+        $message = '<div class="alert alert-error">❌ <strong>Error:</strong> Could not save preferences.</div>';
+    }
+}
+
+// Action: Save Icon Manager
+if ($action === 'saveicons') {
+    $iconKeys = GETPOST('icon_keys', 'array');
+    $errCount = 0;
+    if (is_array($iconKeys)) {
+        foreach ($iconKeys as $key) {
+            $key = $db->escape($key);
+            $faIcon      = $db->escape(GETPOST('fa_'.$key, 'alphanohtml'));
+            $customLabel = $db->escape(GETPOST('label_'.$key, 'alphanohtml'));
+            $isHidden    = GETPOST('hidden_'.$key, 'int') ? 1 : 0;
+            $sql = "UPDATE ".MAIN_DB_PREFIX."flavor_config SET fa_icon='".$faIcon."', custom_label='".$customLabel."', is_hidden=".$isHidden." WHERE menu_key='".$key."' AND entity=1";
+            if (!$db->query($sql)) { $errCount++; }
+        }
+    }
+    if ($errCount === 0) {
+        $message = '<div class="alert alert-success">✅ <strong>Icons saved!</strong> FontAwesome mappings updated. Reload the app (Ctrl+Shift+R) to see changes.</div>';
+    } else {
+        $message = '<div class="alert alert-error">❌ <strong>Error:</strong> '.$errCount.' icon(s) could not be saved.</div>';
+    }
+}
+
 // Action: Save ALL visibility settings (menus + admin tools + module tabs)
 if ($action === 'savemenus' || $action === 'saveadmintools' || $action === 'savemoduletabs' || $action === 'saveall') {
     // Read existing CSS sections we are NOT updating to preserve them
@@ -183,6 +217,41 @@ if ($action === 'lock') {
 // Read current state
 // ──────────────────────────────────────────────────────────────────────────────
 $jsEnabled = getDolGlobalString('ALLOW_THEME_JS');
+$topbarTitle  = getDolGlobalString('FLAVOR_TOPBAR_TITLE');
+$primaryColor = getDolGlobalString('FLAVOR_PRIMARY_COLOR');
+if (empty($primaryColor)) $primaryColor = '#6366F1';
+
+// ── Read icon configuration from llx_flavor_config ──
+$iconConfig = array();
+$sql_icons = "SELECT menu_key, fa_icon, custom_label, is_hidden, sort_order FROM ".MAIN_DB_PREFIX."flavor_config WHERE entity=1 ORDER BY sort_order ASC";
+$resql = $db->query($sql_icons);
+if ($resql) {
+    while ($obj = $db->fetch_object($resql)) {
+        $iconConfig[$obj->menu_key] = array(
+            'fa_icon'      => $obj->fa_icon,
+            'custom_label' => $obj->custom_label,
+            'is_hidden'    => (int) $obj->is_hidden,
+            'sort_order'   => (int) $obj->sort_order,
+        );
+    }
+}
+
+// ── Auto-detect non-native modules from llx_menu ──
+$sql_menus = "SELECT DISTINCT mainmenu FROM ".MAIN_DB_PREFIX."menu WHERE mainmenu != '' AND entity IN (0,1) ORDER BY mainmenu";
+$resql = $db->query($sql_menus);
+if ($resql) {
+    $maxSort = count($iconConfig) * 10 + 10;
+    while ($obj = $db->fetch_object($resql)) {
+        $mk = $obj->mainmenu;
+        if (!isset($iconConfig[$mk])) {
+            // Insert new discovered module into flavor_config
+            $safeMk = $db->escape($mk);
+            $db->query("INSERT INTO ".MAIN_DB_PREFIX."flavor_config (menu_key, fa_icon, custom_label, sort_order, entity) VALUES ('".$safeMk."', 'fas fa-puzzle-piece', '".$safeMk."', ".$maxSort.", 1)");
+            $iconConfig[$mk] = array('fa_icon' => 'fas fa-puzzle-piece', 'custom_label' => $mk, 'is_hidden' => 0, 'sort_order' => $maxSort);
+            $maxSort += 10;
+        }
+    }
+}
 
 // Read currently hidden items from flavor_hidden.css
 $currentlyHidden = array();
@@ -286,6 +355,33 @@ if (file_exists($cssFile)) {
     /* Footer */
     .footer { text-align: center; padding: 24px; color: #94A3B8; font-size: 0.8rem; }
     .footer a { color: #6366F1; text-decoration: none; }
+
+    /* Preferences */
+    .pref-row { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .pref-label { font-size: 0.85rem; font-weight: 600; color: #334155; min-width: 140px; }
+    .pref-input { flex: 1; padding: 10px 14px; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 0.9rem; font-family: inherit; color: #1E293B; transition: border-color 0.2s; outline: none; }
+    .pref-input:focus { border-color: #6366F1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); }
+    input[type=color].pref-color { width: 48px; height: 40px; border: 2px solid #E2E8F0; border-radius: 8px; cursor: pointer; padding: 2px; background: #FFF; }
+    input[type=color].pref-color:hover { border-color: #6366F1; }
+    .color-preview { font-size: 0.8rem; color: #64748B; font-family: monospace; }
+
+    /* Icon Manager */
+    .icon-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .icon-table th { background: #F8FAFC; padding: 10px 12px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; color: #64748B; letter-spacing: 0.04em; text-align: left; border-bottom: 2px solid #E2E8F0; }
+    .icon-table td { padding: 10px 12px; border-bottom: 1px solid #F1F5F9; vertical-align: middle; }
+    .icon-table tr:hover td { background: #FAFBFC; }
+    .icon-table .menu-key { font-weight: 600; color: #334155; font-size: 0.85rem; }
+    .icon-table .fa-preview { width: 32px; height: 32px; background: #312C81; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.9); font-size: 14px; }
+    .icon-table input[type=text] { padding: 7px 10px; border: 1px solid #E2E8F0; border-radius: 6px; font-size: 0.85rem; font-family: inherit; width: 100%; outline: none; transition: border-color 0.2s; }
+    .icon-table input[type=text]:focus { border-color: #6366F1; box-shadow: 0 0 0 2px rgba(99,102,241,0.08); }
+    .icon-table .toggle-switch { position: relative; width: 40px; height: 22px; }
+    .icon-table .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .icon-table .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #CBD5E1; border-radius: 22px; transition: 0.2s; }
+    .icon-table .toggle-slider::before { content: ''; position: absolute; width: 16px; height: 16px; left: 3px; top: 3px; background: #FFF; border-radius: 50%; transition: 0.2s; }
+    .icon-table .toggle-switch input:checked + .toggle-slider { background: #EF4444; }
+    .icon-table .toggle-switch input:checked + .toggle-slider::before { transform: translateX(18px); }
+    .native-badge { font-size: 0.65rem; background: #DCFCE7; color: #166534; padding: 1px 6px; border-radius: 4px; font-weight: 600; margin-left: 6px; }
+    .extra-badge { font-size: 0.65rem; background: #E0E7FF; color: #3730A3; padding: 1px 6px; border-radius: 4px; font-weight: 600; margin-left: 6px; }
 </style>
 </head>
 <body>
@@ -294,11 +390,107 @@ if (file_exists($cssFile)) {
 <div class="topbar">
     <div class="topbar-logo">F</div>
     <h1>Flavor Setup</h1>
-    <span class="version">v1.0</span>
+    <span class="version">v1.1</span>
 </div>
 
 <div class="container">
     <?php echo $message; ?>
+
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <!-- CARD 0: Preferences -->
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon indigo">⚙️</div>
+            <div>
+                <div class="card-title">Preferences</div>
+                <div class="card-subtitle">Topbar title and theme color configuration</div>
+            </div>
+        </div>
+
+        <form method="POST" action="?action=saveprefs">
+            <input type="hidden" name="token" value="<?php echo newToken(); ?>">
+
+            <div class="pref-row">
+                <span class="pref-label">Topbar Title</span>
+                <input type="text" name="topbar_title" class="pref-input" value="<?php echo htmlspecialchars($topbarTitle); ?>" placeholder="e.g. Dolisys, Your Company...">
+            </div>
+
+            <div class="pref-row">
+                <span class="pref-label">Primary Color</span>
+                <input type="color" name="primary_color" class="pref-color" value="<?php echo htmlspecialchars($primaryColor); ?>" onchange="document.getElementById('color-hex').textContent = this.value">
+                <span class="color-preview" id="color-hex"><?php echo htmlspecialchars($primaryColor); ?></span>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">💾 Save Preferences</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <!-- CARD 0.5: Icon Manager -->
+    <!-- ────────────────────────────────────────────────────────────────────── -->
+    <div class="card">
+        <div class="card-header">
+            <div class="card-icon purple">🎯</div>
+            <div>
+                <div class="card-title">Icon Manager</div>
+                <div class="card-subtitle">Customize FontAwesome icons and labels for each sidebar menu</div>
+            </div>
+        </div>
+
+        <form method="POST" action="?action=saveicons">
+            <input type="hidden" name="token" value="<?php echo newToken(); ?>">
+            <table class="icon-table">
+                <thead>
+                    <tr>
+                        <th style="width:36px">Preview</th>
+                        <th>Menu</th>
+                        <th>FA Icon Class</th>
+                        <th>Custom Label</th>
+                        <th style="width:60px">Hide</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $nativeKeys = array('home','companies','products','commercial','compta','accountancy','bank','project','hrm','ticket','tools','members');
+                    foreach ($iconConfig as $key => $cfg):
+                        $isNative = in_array($key, $nativeKeys);
+                    ?>
+                    <tr>
+                        <td>
+                            <div class="fa-preview" id="preview_<?php echo $key; ?>">
+                                <i class="<?php echo htmlspecialchars($cfg['fa_icon']); ?>"></i>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="menu-key"><?php echo htmlspecialchars($key); ?></span>
+                            <?php if ($isNative): ?><span class="native-badge">native</span><?php else: ?><span class="extra-badge">module</span><?php endif; ?>
+                        </td>
+                        <td>
+                            <input type="hidden" name="icon_keys[]" value="<?php echo htmlspecialchars($key); ?>">
+                            <input type="text" name="fa_<?php echo $key; ?>" value="<?php echo htmlspecialchars($cfg['fa_icon']); ?>" placeholder="fas fa-icon" oninput="document.querySelector('#preview_<?php echo $key; ?> i').className = this.value">
+                        </td>
+                        <td>
+                            <input type="text" name="label_<?php echo $key; ?>" value="<?php echo htmlspecialchars($cfg['custom_label']); ?>" placeholder="Label">
+                        </td>
+                        <td>
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="hidden_<?php echo $key; ?>" value="1" <?php echo $cfg['is_hidden'] ? 'checked' : ''; ?>>
+                                <span class="toggle-slider"></span>
+                            </label>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+
+            <div class="btn-group" style="margin-top: 16px;">
+                <button type="submit" class="btn btn-primary">💾 Save Icons</button>
+            </div>
+        </form>
+    </div>
 
     <!-- ────────────────────────────────────────────────────────────────────── -->
     <!-- CARD 1: White-labeling Status -->
@@ -461,7 +653,7 @@ if (file_exists($cssFile)) {
     </div>
 
     <div class="footer">
-        Flavor Theme for <a href="<?php echo DOL_URL_ROOT; ?>/index.php">Dolisys</a> • Phase 10
+        Flavor Theme v1.1 for <a href="<?php echo DOL_URL_ROOT; ?>/index.php">Dolisys</a> • <a href="https://novadx.pt" target="_blank">NovaDX</a>
     </div>
 </div>
 
