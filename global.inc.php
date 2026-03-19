@@ -4994,14 +4994,25 @@ body.bodylogin #login-submit-wrapper input:hover {
 /* ============================================================================== */
 
 #flavor-topbar-title {
+	position: fixed !important;
+	top: 0 !important;
+	left: 302px !important;
+	height: 52px !important;
+	display: flex !important;
+	align-items: center !important;
 	font-size: 1.1rem !important;
 	font-weight: 600 !important;
 	color: var(--flavor-slate-800) !important;
-	margin-left: 20px !important;
 	white-space: nowrap !important;
 	letter-spacing: -0.01em !important;
-	flex-shrink: 0 !important;
-	order: 5 !important;
+	z-index: 100 !important;
+	pointer-events: none !important;
+	transition: left 0.25s ease !important;
+}
+
+/* When sidebar collapsed, shift title left */
+body.flavor-sidebar-collapsed #flavor-topbar-title {
+	left: 72px !important;
 }
 
 @media (max-width: 1024px) {
@@ -5086,8 +5097,8 @@ div.tmenudiv,
 
 /* Section titles — cleaner Vendus style */
 .blockvmenu .menu_titre {
-	padding: 12px 16px 6px !important;
-	margin-top: 4px !important;
+	padding: 12px 16px 4px !important;
+	margin-top: 2px !important;
 }
 .blockvmenu .menu_titre a.vmenu,
 .blockvmenu .menu_titre span.vmenu {
@@ -5099,5 +5110,86 @@ div.tmenudiv,
 }
 
 
+/* ============================================================================== */
+/*                                                                                */
+/*   PHASE 13 — SIDEBAR TOGGLE & COLLAPSE (Vendus-style)                          */
+/*                                                                                */
+/* ============================================================================== */
 
+/* --- Toggle button at top of sidebar --- */
+#flavor-sidebar-toggle {
+	display: flex !important;
+	align-items: center !important;
+	justify-content: flex-end !important;
+	padding: 10px 14px !important;
+	cursor: pointer !important;
+	color: rgba(255,255,255,0.5) !important;
+	transition: color 0.15s ease !important;
+	border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+	user-select: none !important;
+}
+#flavor-sidebar-toggle:hover {
+	color: rgba(255,255,255,0.9) !important;
+}
+
+.flavor-toggle-arrow {
+	font-size: 20px !important;
+	font-weight: 700 !important;
+	line-height: 1 !important;
+	transition: transform 0.25s ease !important;
+	display: inline-block !important;
+}
+
+/* When collapsed, rotate arrow to point right ›  */
+#flavor-sidebar-toggle.collapsed .flavor-toggle-arrow {
+	transform: rotate(180deg) !important;
+}
+
+/* --- Smooth transitions for sidebar --- */
+#id-left {
+	transition: width 0.25s ease, min-width 0.25s ease, opacity 0.2s ease !important;
+	overflow: hidden !important;
+}
+
+/* --- Collapsed state: hide #id-left --- */
+body.flavor-sidebar-collapsed #id-left {
+	width: 0 !important;
+	min-width: 0 !important;
+	opacity: 0 !important;
+	overflow: hidden !important;
+	padding: 0 !important;
+}
+
+/* When collapsed, content area gets full width */
+body.flavor-sidebar-collapsed #id-right {
+	margin-left: 0 !important;
+}
+
+/* --- Hover-to-reveal overlay when collapsed --- */
+body.flavor-sidebar-collapsed #id-left.flavor-sidebar-hover {
+	width: 220px !important;
+	min-width: 220px !important;
+	opacity: 1 !important;
+	position: fixed !important;
+	top: 52px !important;
+	left: 62px !important;
+	bottom: 0 !important;
+	z-index: 999 !important;
+	box-shadow: 6px 0 20px rgba(0,0,0,0.25) !important;
+	overflow-y: auto !important;
+	background: #312C81 !important;
+}
+
+/* Compact submenu items — tighter Vendus style */
+.blockvmenu .menu_contenu a {
+	padding: 6px 14px 6px 16px !important;
+	margin: 1px 6px !important;
+	border-radius: 6px !important;
+	font-size: 0.82rem !important;
+}
+
+/* Even tighter spacing between blocks */
+.blockvmenu {
+	margin-bottom: 2px !important;
+}
 

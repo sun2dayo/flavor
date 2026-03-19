@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
 	})();
 
 	// =====================================================================
-	// PART 2.5: TOPBAR TITLE INJECTION
+	// PART 2.5: TOPBAR TITLE — DYNAMIC PAGE TITLE
 	// =====================================================================
 
 	(function initTopbarTitle() {
@@ -122,31 +122,97 @@ document.addEventListener("DOMContentLoaded", function () {
 			return;
 		}
 
-		// Read title from CSS variable (set by style.css.php from FLAVOR_TOPBAR_TITLE)
-		var rootStyles = getComputedStyle(document.documentElement);
-		var titleValue = rootStyles.getPropertyValue('--flavor-topbar-title').trim();
-
-		// Remove quotes from CSS string value
-		if (titleValue && titleValue.length > 2) {
-			titleValue = titleValue.replace(/^['"]|['"]$/g, '');
-		}
-
-		if (!titleValue || titleValue === 'none') return;
-
 		var topbar = document.getElementById('id-top');
 		if (!topbar) return;
 
+		// Extract page title from content area
+		var pageTitle = '';
+		var titleEl = document.querySelector('.fiche .titre.inline-block') ||
+					  document.querySelector('.fiche h1') ||
+					  document.querySelector('#id-right h1') ||
+					  document.querySelector('.titre');
+		if (titleEl) {
+			pageTitle = titleEl.textContent.trim();
+		}
+
+		if (!pageTitle) return;
+
 		var titleDiv = document.createElement('div');
 		titleDiv.id = 'flavor-topbar-title';
-		titleDiv.textContent = titleValue;
+		titleDiv.textContent = pageTitle;
 
-		// Insert after the search box area
+		// Insert before the login block
 		var loginBlock = topbar.querySelector('.login_block');
 		if (loginBlock) {
 			topbar.insertBefore(titleDiv, loginBlock);
 		} else {
 			topbar.appendChild(titleDiv);
 		}
+	})();
+
+	// =====================================================================
+	// PART 2.7: VENDUS-STYLE COLLAPSIBLE SIDEBAR
+	// =====================================================================
+
+	(function initCollapsibleSidebar() {
+		// Skip login, public pages, TakePOS
+		if (document.body.classList.contains('bodylogin') ||
+			document.body.classList.contains('bodytakepos') ||
+			document.querySelector('.backgreypublicpayment')) {
+			return;
+		}
+
+		var leftSidebar = document.getElementById('id-left');
+		if (!leftSidebar) return;
+
+		var STORAGE_KEY = 'flavor_sidebar_pinned';
+		var isPinned = localStorage.getItem(STORAGE_KEY) !== 'false'; // default: pinned (open)
+
+		// Create toggle button
+		var toggleBtn = document.createElement('div');
+		toggleBtn.id = 'flavor-sidebar-toggle';
+		toggleBtn.innerHTML = '<span class="flavor-toggle-arrow">‹</span>';
+		toggleBtn.title = 'Collapse sidebar';
+
+		// Insert toggle at the top of sidebar
+		leftSidebar.insertBefore(toggleBtn, leftSidebar.firstChild);
+
+		// Apply saved state
+		if (!isPinned) {
+			document.body.classList.add('flavor-sidebar-collapsed');
+			toggleBtn.classList.add('collapsed');
+			toggleBtn.title = 'Pin sidebar';
+		}
+
+		// Toggle click
+		toggleBtn.addEventListener('click', function(e) {
+			e.stopPropagation();
+			var isCollapsed = document.body.classList.contains('flavor-sidebar-collapsed');
+
+			if (isCollapsed) {
+				// Expand & pin
+				document.body.classList.remove('flavor-sidebar-collapsed');
+				toggleBtn.classList.remove('collapsed');
+				toggleBtn.title = 'Collapse sidebar';
+				localStorage.setItem(STORAGE_KEY, 'true');
+			} else {
+				// Collapse & unpin
+				document.body.classList.add('flavor-sidebar-collapsed');
+				toggleBtn.classList.add('collapsed');
+				toggleBtn.title = 'Pin sidebar';
+				localStorage.setItem(STORAGE_KEY, 'false');
+			}
+		});
+
+		// Hover-to-reveal when collapsed
+		leftSidebar.addEventListener('mouseenter', function() {
+			if (document.body.classList.contains('flavor-sidebar-collapsed')) {
+				leftSidebar.classList.add('flavor-sidebar-hover');
+			}
+		});
+		leftSidebar.addEventListener('mouseleave', function() {
+			leftSidebar.classList.remove('flavor-sidebar-hover');
+		});
 	})();
 
 	// =====================================================================
