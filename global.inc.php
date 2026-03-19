@@ -5011,7 +5011,7 @@ body.bodylogin #login-submit-wrapper input:hover {
 }
 
 /* When sidebar collapsed, shift title left */
-body.flavor-sidebar-collapsed #flavor-topbar-title {
+#mainbody.flavor-sidebar-collapsed #flavor-topbar-title {
 	left: 72px !important;
 }
 
@@ -5151,24 +5151,38 @@ div.tmenudiv,
 	overflow-y: auto !important;
 }
 
-/* --- Collapsed state: hide #id-left --- */
-body.flavor-sidebar-collapsed #id-left {
+/* --- Collapsed state: hide #id-left and .side-nav wrapper --- */
+/* Must use #mainbody prefix to beat Dolibarr's #mainbody .side-nav specificity */
+#mainbody.flavor-sidebar-collapsed #id-left {
 	width: 0 !important;
 	min-width: 0 !important;
+	max-width: 0 !important;
 	opacity: 0 !important;
 	overflow: hidden !important;
 	padding: 0 !important;
 }
+#mainbody.flavor-sidebar-collapsed .side-nav {
+	width: 0 !important;
+	min-width: 0 !important;
+	max-width: 0 !important;
+	overflow: visible !important;
+	transition: width 0.25s ease !important;
+}
 
-/* When collapsed, content area gets full width */
-body.flavor-sidebar-collapsed #id-right {
+/* When collapsed, content container shifts left (62px = icon bar only) */
+#mainbody.flavor-sidebar-collapsed #id-container {
+	margin-left: 62px !important;
+}
+#mainbody.flavor-sidebar-collapsed #id-right {
 	margin-left: 0 !important;
 }
 
 /* --- Hover-to-reveal overlay when collapsed --- */
-body.flavor-sidebar-collapsed #id-left.flavor-sidebar-hover {
+#mainbody.flavor-sidebar-collapsed .side-nav:hover #id-left,
+#mainbody.flavor-sidebar-collapsed #id-left.flavor-sidebar-hover {
 	width: 220px !important;
 	min-width: 220px !important;
+	max-width: 220px !important;
 	opacity: 1 !important;
 	position: fixed !important;
 	top: 52px !important;
@@ -5177,7 +5191,9 @@ body.flavor-sidebar-collapsed #id-left.flavor-sidebar-hover {
 	z-index: 999 !important;
 	box-shadow: 6px 0 20px rgba(0,0,0,0.25) !important;
 	overflow-y: auto !important;
+	overflow-x: hidden !important;
 	background: #312C81 !important;
+	padding: 8px 0 !important;
 }
 
 /* Compact submenu items — tighter Vendus style */
