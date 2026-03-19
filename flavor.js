@@ -150,6 +150,73 @@ document.addEventListener("DOMContentLoaded", function () {
 	})();
 
 	// =====================================================================
+	// PART 2.6: ICON MANAGER — SWAP FA CLASSES FROM llx_flavor_config
+	// =====================================================================
+
+	(function initIconManager() {
+		// Skip login, public pages, and TakePOS
+		if (document.body.classList.contains('bodylogin') ||
+			document.body.classList.contains('bodytakepos')) {
+			return;
+		}
+
+		// Read icon map from CSS variable (set by style.css.php from llx_flavor_config)
+		var rootStyles = getComputedStyle(document.documentElement);
+		var mapValue = rootStyles.getPropertyValue('--flavor-icon-map').trim();
+
+		// Remove wrapping quotes
+		if (mapValue && mapValue.length > 2) {
+			mapValue = mapValue.replace(/^['"]|['"]$/g, '');
+		}
+
+		if (!mapValue || mapValue === 'none') return;
+
+		var iconMap;
+		try {
+			iconMap = JSON.parse(mapValue);
+		} catch (e) {
+			return; // Invalid JSON, skip silently
+		}
+
+		// For each menu key, find the native FA span and swap its class
+		Object.keys(iconMap).forEach(function(menuKey) {
+			var customClass = iconMap[menuKey]; // e.g. "fas fa-building"
+			if (!customClass) return;
+
+			var container = document.getElementById('mainmenutd_' + menuKey);
+			if (!container) return;
+
+			var span = container.querySelector('.mainmenu.topmenuimage > span[class*="fa-"]');
+			if (!span) return;
+
+			// Strip all existing FA icon classes (fa-xxx) but keep fas/far/fab/fa
+			var currentClasses = span.className.split(' ');
+			var newClasses = [];
+			for (var i = 0; i < currentClasses.length; i++) {
+				var cls = currentClasses[i].trim();
+				// Keep utility classes (fa-fw, pictofixedwidth, etc) but remove the icon class
+				if (cls.match(/^fa-/) && !cls.match(/^fa-fw$/)) {
+					continue; // Remove old icon class like fa-building, fa-cube, etc.
+				}
+				if (cls === 'fas' || cls === 'far' || cls === 'fab' || cls === 'fa') {
+					continue; // We'll re-add the prefix from customClass
+				}
+				if (cls) newClasses.push(cls);
+			}
+
+			// Add the custom classes (e.g. "fas fa-building" → ["fas", "fa-building"])
+			var customParts = customClass.split(' ');
+			for (var j = 0; j < customParts.length; j++) {
+				if (customParts[j].trim()) {
+					newClasses.push(customParts[j].trim());
+				}
+			}
+
+			span.className = newClasses.join(' ');
+		});
+	})();
+
+	// =====================================================================
 	// PART 3: MOBILE MENU (only on internal pages)
 	// =====================================================================
 

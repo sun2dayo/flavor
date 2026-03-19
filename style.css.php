@@ -401,6 +401,23 @@ echo "#tmenu_tooltip .mainmenu.topmenuimage {\n";
 echo "\tbackground-image: none !important;\n";
 echo "}\n";
 
+// Pass custom icon mappings to JS via CSS variable
+if (is_object($db)) {
+    $sql_ic = "SELECT menu_key, fa_icon FROM ".MAIN_DB_PREFIX."flavor_config WHERE entity=1 AND fa_icon != ''";
+    $resql_ic = $db->query($sql_ic);
+    if ($resql_ic) {
+        $iconMap = array();
+        while ($obj_ic = $db->fetch_object($resql_ic)) {
+            $iconMap[$obj_ic->menu_key] = $obj_ic->fa_icon;
+        }
+        if (!empty($iconMap)) {
+            $jsonMap = addslashes(json_encode($iconMap));
+            echo "\n/* Icon config carrier (read by flavor.js) */\n";
+            echo ":root { --flavor-icon-map: '".$jsonMap."'; }\n";
+        }
+    }
+}
+
 
 // ──────────────────────────────────────────────────────────────────────────────
 // DYNAMIC CSS: Topbar title data attribute (read by flavor.js)
