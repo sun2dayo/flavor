@@ -148,6 +148,17 @@ document.addEventListener("DOMContentLoaded", function () {
 		} else {
 			topbar.appendChild(titleDiv);
 		}
+
+		// Hide the original title in the body to prevent duplication
+		if (titleEl) {
+			// Try to hide the parent container (.fiche-head) for cleaner look
+			var ficheHead = titleEl.closest('.fiche-head');
+			if (ficheHead) {
+				ficheHead.style.display = 'none';
+			} else {
+				titleEl.style.display = 'none';
+			}
+		}
 	})();
 
 	// =====================================================================
@@ -258,6 +269,38 @@ document.addEventListener("DOMContentLoaded", function () {
 			sideNav.addEventListener('mouseenter', showSidebar);
 			sideNav.addEventListener('mouseleave', hideSidebar);
 		}
+	})();
+
+	// =====================================================================
+	// PART 2.8: SMOOTH PAGE TRANSITIONS
+	// =====================================================================
+
+	(function initPageTransitions() {
+		// Skip login and public pages
+		if (document.body.classList.contains('bodylogin') ||
+			document.body.classList.contains('bodytakepos')) {
+			return;
+		}
+
+		// On internal link click, fade out content before navigating
+		document.addEventListener('click', function(e) {
+			var link = e.target.closest('a[href]');
+			if (!link) return;
+
+			var href = link.getAttribute('href');
+			if (!href || href === '#' || href.startsWith('javascript:')) return;
+			if (link.target === '_blank' || e.ctrlKey || e.metaKey || e.shiftKey) return;
+			if (href.startsWith('http') && !href.startsWith(window.location.origin)) return;
+
+			// Add fade-out class
+			document.body.classList.add('flavor-page-leaving');
+
+			// Let the fade-out animation play, then navigate
+			e.preventDefault();
+			setTimeout(function() {
+				window.location.href = link.href;
+			}, 150);
+		});
 	})();
 
 	// =====================================================================

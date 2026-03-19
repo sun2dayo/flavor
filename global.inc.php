@@ -5012,13 +5012,36 @@ body.bodylogin #login-submit-wrapper input:hover {
 
 /* When sidebar collapsed, shift title left */
 #mainbody.flavor-sidebar-collapsed #flavor-topbar-title {
-	left: 72px !important;
+	left: 90px !important;
 }
 
 @media (max-width: 1024px) {
 	#flavor-topbar-title {
 		display: none !important;
 	}
+}
+
+/* ============================================================================== */
+/*                                                                                */
+/*   PHASE 13 — SMOOTH PAGE TRANSITIONS                                           */
+/*                                                                                */
+/* ============================================================================== */
+
+/* Fade-in on page load */
+@keyframes flavorPageFadeIn {
+	from { opacity: 0; transform: translateY(6px); }
+	to { opacity: 1; transform: translateY(0); }
+}
+
+#id-right {
+	animation: flavorPageFadeIn 0.3s ease-out !important;
+}
+
+/* Fade-out when navigating away */
+.flavor-page-leaving #id-right {
+	opacity: 0 !important;
+	transform: translateY(-4px) !important;
+	transition: opacity 0.15s ease, transform 0.15s ease !important;
 }
 
 
