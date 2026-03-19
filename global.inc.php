@@ -2030,15 +2030,11 @@ span.badge.badge-info {
 }
 
 /* Dashboard card icons — shift PNG colors to indigo theme */
-.box-flex-item img.inline-block[src*="object_"],
-.fichecenter img.inline-block[src*="object_"],
-a.dashboardlineindicator img,
-div.dashboardlineindicator img,
+/* Target ALL Dolibarr module icons regardless of container */
+img[src*="object_"],
+.boxstats img,
 .boxstatsindicator img,
-img.dashboardimg,
-img[src*="object_"][width="56"],
-img[src*="object_"][height="56"],
-.fichecenter .titre img[src*="object_"] {
+.thumbstat img {
 	filter: grayscale(1) sepia(1) hue-rotate(210deg) saturate(4) brightness(0.75) !important;
 }
 
