@@ -165,6 +165,12 @@ document.addEventListener("DOMContentLoaded", function () {
 		var leftSidebar = document.getElementById('id-left');
 		if (!leftSidebar) return;
 
+		var sideNav = leftSidebar.closest('.side-nav') || leftSidebar.parentElement;
+		// The icon bar (vertical strip with icons) is .tmenudiv (80px × full height)
+		var iconBar = document.querySelector('.tmenudiv') ||
+					  document.querySelector('ul.tmenu') ||
+					  document.getElementById('tmenu_tooltip');
+
 		var STORAGE_KEY = 'flavor_sidebar_pinned';
 		var isPinned = localStorage.getItem(STORAGE_KEY) !== 'false'; // default: pinned (open)
 
@@ -177,21 +183,23 @@ document.addEventListener("DOMContentLoaded", function () {
 		// Insert toggle at the top of sidebar
 		leftSidebar.insertBefore(toggleBtn, leftSidebar.firstChild);
 
-		// Apply saved state
+		// Apply saved state immediately
 		if (!isPinned) {
 			document.body.classList.add('flavor-sidebar-collapsed');
 			toggleBtn.classList.add('collapsed');
 			toggleBtn.title = 'Pin sidebar';
 		}
 
-		// Toggle click
+		// Toggle click — expand/collapse
 		toggleBtn.addEventListener('click', function(e) {
 			e.stopPropagation();
+			e.preventDefault();
 			var isCollapsed = document.body.classList.contains('flavor-sidebar-collapsed');
 
 			if (isCollapsed) {
 				// Expand & pin
 				document.body.classList.remove('flavor-sidebar-collapsed');
+				leftSidebar.classList.remove('flavor-sidebar-hover');
 				toggleBtn.classList.remove('collapsed');
 				toggleBtn.title = 'Collapse sidebar';
 				localStorage.setItem(STORAGE_KEY, 'true');
@@ -204,15 +212,52 @@ document.addEventListener("DOMContentLoaded", function () {
 			}
 		});
 
-		// Hover-to-reveal when collapsed
+		// ---- Hover-to-reveal when collapsed ----
+		// Uses direct inline styles to bypass all CSS specificity issues
+		var hoverTimeout = null;
+		var HOVER_STYLES = 'width:220px!important;min-width:220px!important;max-width:220px!important;' +
+			'opacity:1!important;position:fixed!important;top:52px!important;left:62px!important;' +
+			'bottom:0!important;z-index:999!important;box-shadow:6px 0 20px rgba(0,0,0,0.25)!important;' +
+			'overflow-y:auto!important;overflow-x:hidden!important;background:#312C81!important;' +
+			'padding:8px 0!important;';
+
+		function showSidebar() {
+			if (document.body.classList.contains('flavor-sidebar-collapsed')) {
+				clearTimeout(hoverTimeout);
+				leftSidebar.style.cssText = HOVER_STYLES;
+			}
+		}
+
+		function hideSidebar() {
+			hoverTimeout = setTimeout(function() {
+				leftSidebar.style.cssText = '';
+			}, 200); // small delay so mouse can travel from icon bar to sidebar
+		}
+
+		function cancelHide() {
+			clearTimeout(hoverTimeout);
+		}
+
+		// Trigger: hovering over the icon bar reveals the sidebar
+		if (iconBar) {
+			iconBar.addEventListener('mouseenter', showSidebar);
+			iconBar.addEventListener('mouseleave', hideSidebar);
+		}
+
+		// Keep sidebar open while mouse is over it
 		leftSidebar.addEventListener('mouseenter', function() {
 			if (document.body.classList.contains('flavor-sidebar-collapsed')) {
-				leftSidebar.classList.add('flavor-sidebar-hover');
+				cancelHide();
+				leftSidebar.style.cssText = HOVER_STYLES;
 			}
 		});
-		leftSidebar.addEventListener('mouseleave', function() {
-			leftSidebar.classList.remove('flavor-sidebar-hover');
-		});
+		leftSidebar.addEventListener('mouseleave', hideSidebar);
+
+		// Also trigger when hovering over the .side-nav area
+		if (sideNav) {
+			sideNav.addEventListener('mouseenter', showSidebar);
+			sideNav.addEventListener('mouseleave', hideSidebar);
+		}
 	})();
 
 	// =====================================================================

@@ -4996,7 +4996,7 @@ body.bodylogin #login-submit-wrapper input:hover {
 #flavor-topbar-title {
 	position: fixed !important;
 	top: 0 !important;
-	left: 302px !important;
+	left: 315px !important;
 	height: 52px !important;
 	display: flex !important;
 	align-items: center !important;
