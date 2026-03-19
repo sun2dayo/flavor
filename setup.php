@@ -286,6 +286,7 @@ if (file_exists($cssFile)) {
 <head>
 <title>Flavor Theme Setup — Dolisys</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', -apple-system, sans-serif; background: #F1F5F9; color: #1E293B; min-height: 100vh; }

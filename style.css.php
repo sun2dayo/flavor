@@ -411,7 +411,7 @@ if (is_object($db)) {
             $iconMap[$obj_ic->menu_key] = $obj_ic->fa_icon;
         }
         if (!empty($iconMap)) {
-            $jsonMap = addslashes(json_encode($iconMap));
+            $jsonMap = json_encode($iconMap);
             echo "\n/* Icon config carrier (read by flavor.js) */\n";
             echo ":root { --flavor-icon-map: '".$jsonMap."'; }\n";
         }
