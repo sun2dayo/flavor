@@ -5096,13 +5096,14 @@ body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > table.table-fiche-titl
 	box-shadow: 0 2px 8px rgba(99,102,241,0.3) !important;
 }
 .btnTitlePlus:hover {
-	background: #818CF8 !important;
-	transform: scale(1.1) !important;
-	box-shadow: 0 4px 14px rgba(99,102,241,0.45) !important;
+	background: #4F46E5 !important;
+	transform: scale(1.12) !important;
+	box-shadow: 0 6px 18px rgba(99,102,241,0.5) !important;
 }
 .btnTitlePlus:active {
-	background: #4F46E5 !important;
+	background: #3730A3 !important;
 	transform: scale(0.95) !important;
+	box-shadow: 0 2px 6px rgba(99,102,241,0.3) !important;
 }
 .btnTitlePlus .btnTitle-icon {
 	color: #fff !important;
