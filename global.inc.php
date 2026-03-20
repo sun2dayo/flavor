@@ -5050,14 +5050,34 @@ body:not(.bodylogin):not(.bodytakepos) #id-right {
 	padding-top: 8px !important;
 }
 
-body:not(.bodylogin):not(.bodytakepos) #id-right table.table-fiche-title:first-of-type,
-body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > table.table-fiche-title:first-of-type,
-body:not(.bodylogin):not(.bodytakepos) #id-right > table.table-fiche-title:first-of-type {
+/* Hide only the title TEXT and picto, keep action buttons (right column) visible */
+body:not(.bodylogin):not(.bodytakepos) #id-right table.table-fiche-title:first-of-type td.col-picto,
+body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > table.table-fiche-title:first-of-type td.col-picto {
 	display: none !important;
-	height: 0 !important;
-	margin: 0 !important;
-	padding: 0 !important;
-	overflow: hidden !important;
+}
+
+body:not(.bodylogin):not(.bodytakepos) #id-right table.table-fiche-title:first-of-type td.col-title .titre,
+body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > table.table-fiche-title:first-of-type td.col-title .titre {
+	display: none !important;
+}
+
+/* Also hide the subtitle if present */
+body:not(.bodylogin):not(.bodytakepos) #id-right table.table-fiche-title:first-of-type td.col-title .subtitle,
+body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > table.table-fiche-title:first-of-type td.col-title .subtitle {
+	display: none !important;
+}
+
+/* Also hide record count next to title */
+body:not(.bodylogin):not(.bodytakepos) #id-right table.table-fiche-title:first-of-type td.col-title .totalnboflines,
+body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > table.table-fiche-title:first-of-type td.col-title .totalnboflines {
+	display: none !important;
+}
+
+/* Make the title bar compact since we removed the text */
+body:not(.bodylogin):not(.bodytakepos) #id-right table.table-fiche-title:first-of-type,
+body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > table.table-fiche-title:first-of-type {
+	margin-bottom: 4px !important;
+	border-bottom: none !important;
 }
 
 @media (max-width: 1024px) {
