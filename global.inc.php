@@ -5014,37 +5014,41 @@ body.bodylogin #login-submit-wrapper input:hover {
 #flavor-topbar-title {
 	position: fixed !important;
 	top: 0 !important;
-	left: 315px !important;
+	left: 60px !important;
+	right: 0 !important;
 	height: 52px !important;
 	display: flex !important;
 	align-items: center !important;
+	padding-left: 255px !important;
+	padding-right: 20px !important;
 	font-size: 1.1rem !important;
 	font-weight: 600 !important;
 	color: var(--flavor-slate-800) !important;
 	background: #FFFFFF !important;
-	padding-right: 20px !important;
 	white-space: nowrap !important;
 	letter-spacing: -0.01em !important;
 	z-index: 100 !important;
 	pointer-events: none !important;
-	transition: left 0.25s ease !important;
+	transition: left 0.25s ease, padding-left 0.25s ease !important;
 }
 
-/* Collapse the empty gap where the body title was hidden */
-.fiche-head[style*="display: none"] + .fiche,
-.fiche-head[style*="display:none"] + .fiche {
-	margin-top: 0 !important;
-	padding-top: 0 !important;
-}
-
-/* Also reduce the gap in the content area when title is hidden */
-#id-right .fiche {
-	padding-top: 10px !important;
-}
-
-/* When sidebar collapsed, shift title left */
+/* When sidebar collapsed, shift title left and reduce padding */
 #mainbody.flavor-sidebar-collapsed #flavor-topbar-title {
-	left: 90px !important;
+	left: 60px !important;
+	padding-left: 30px !important;
+}
+
+/* Reduce gap when body title was moved to topbar */
+#id-right.flavor-title-hidden .fiche {
+	padding-top: 5px !important;
+	margin-top: 0 !important;
+}
+#id-right.flavor-title-hidden div.titre,
+#id-right.flavor-title-hidden .fiche-head {
+	display: none !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	height: 0 !important;
 }
 
 @media (max-width: 1024px) {
