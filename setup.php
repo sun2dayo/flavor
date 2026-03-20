@@ -237,34 +237,48 @@ if ($resql) {
 }
 
 // ── Auto-detect non-native modules from llx_menu ──
-// Smart icon defaults for known modules (avoids repeated puzzle-piece)
+// Smart icon & label defaults for ALL known menus (native + modules)
 $moduleIconDefaults = array(
-    'agenda'          => 'fas fa-calendar-check',
-    'billing'         => 'fas fa-file-invoice',
-    'ecm'             => 'fas fa-folder-open',
-    'mrp'             => 'fas fa-industry',
-    'takepos'         => 'fas fa-cash-register',
-    'website'         => 'fas fa-globe-americas',
-    'recruitment'     => 'fas fa-user-plus',
-    'holiday'         => 'fas fa-umbrella-beach',
-    'expensereport'   => 'fas fa-money-check-alt',
-    'don'             => 'fas fa-hand-holding-heart',
-    'loan'            => 'fas fa-piggy-bank',
-    'contracts'       => 'fas fa-file-signature',
-    'interventions'   => 'fas fa-toolbox',
-    'supplier'        => 'fas fa-truck-loading',
-    'shipping'        => 'fas fa-shipping-fast',
-    'stock'           => 'fas fa-warehouse',
-    'resource'        => 'fas fa-sitemap',
-    'ftp'             => 'fas fa-server',
-    'stripe'          => 'fab fa-stripe-s',
-    'paypal'          => 'fab fa-paypal',
-    'zapier'          => 'fas fa-bolt',
-    'opensurvey'      => 'fas fa-poll',
-    'emailings'       => 'fas fa-mail-bulk',
-    'externalsite'    => 'fas fa-external-link-alt',
-    'api'             => 'fas fa-plug',
-    'bom'             => 'fas fa-clipboard-list',
+    // Native menus
+    'home'            => array('fas fa-solar-panel',        'Dashboard'),
+    'companies'       => array('fas fa-city',               'Third Parties'),
+    'products'        => array('fas fa-cube',               'Products / Services'),
+    'commercial'      => array('fas fa-handshake',          'Commercial'),
+    'compta'          => array('fas fa-receipt',             'Billing / Payments'),
+    'accountancy'     => array('fas fa-balance-scale-right', 'Accountancy'),
+    'bank'            => array('fas fa-landmark',           'Banking'),
+    'project'         => array('fas fa-rocket',             'Projects'),
+    'hrm'             => array('fas fa-user-tie',           'HR / Leaves'),
+    'ticket'          => array('fas fa-headset',            'Tickets / Support'),
+    'tools'           => array('fas fa-cogs',               'Tools'),
+    'members'         => array('fas fa-address-book',       'Members'),
+    // Auto-detected modules
+    'agenda'          => array('fas fa-calendar-check',     'Agenda'),
+    'billing'         => array('fas fa-file-invoice',       'Billing'),
+    'ecm'             => array('fas fa-folder-open',        'Documents'),
+    'mrp'             => array('fas fa-industry',           'Manufacturing'),
+    'takepos'         => array('fas fa-cash-register',      'TakePOS'),
+    'website'         => array('fas fa-globe-americas',     'Website'),
+    'recruitment'     => array('fas fa-user-plus',          'Recruitment'),
+    'holiday'         => array('fas fa-umbrella-beach',     'Holidays'),
+    'expensereport'   => array('fas fa-money-check-alt',    'Expenses'),
+    'don'             => array('fas fa-hand-holding-heart', 'Donations'),
+    'loan'            => array('fas fa-piggy-bank',         'Loans'),
+    'contracts'       => array('fas fa-file-signature',     'Contracts'),
+    'interventions'   => array('fas fa-toolbox',            'Interventions'),
+    'supplier'        => array('fas fa-truck-loading',      'Suppliers'),
+    'shipping'        => array('fas fa-shipping-fast',      'Shipments'),
+    'stock'           => array('fas fa-warehouse',          'Stock'),
+    'resource'        => array('fas fa-sitemap',            'Resources'),
+    'ftp'             => array('fas fa-server',             'FTP'),
+    'stripe'          => array('fab fa-stripe-s',           'Stripe'),
+    'paypal'          => array('fab fa-paypal',             'PayPal'),
+    'zapier'          => array('fas fa-bolt',               'Zapier'),
+    'opensurvey'      => array('fas fa-poll',               'Surveys'),
+    'emailings'       => array('fas fa-mail-bulk',          'Mailings'),
+    'externalsite'    => array('fas fa-external-link-alt',  'External Site'),
+    'api'             => array('fas fa-plug',               'API'),
+    'bom'             => array('fas fa-clipboard-list',     'Bill of Materials'),
 );
 
 $sql_menus = "SELECT DISTINCT mainmenu FROM ".MAIN_DB_PREFIX."menu WHERE mainmenu != '' AND entity IN (0,1) ORDER BY mainmenu";
@@ -274,12 +288,19 @@ if ($resql) {
     while ($obj = $db->fetch_object($resql)) {
         $mk = $obj->mainmenu;
         if (!isset($iconConfig[$mk])) {
-            // Pick icon: use known mapping, or fallback to a generic non-puzzle icon
-            $autoIcon = isset($moduleIconDefaults[$mk]) ? $moduleIconDefaults[$mk] : 'fas fa-layer-group';
-            $safeMk = $db->escape($mk);
-            $safeIcon = $db->escape($autoIcon);
-            $db->query("INSERT INTO ".MAIN_DB_PREFIX."flavor_config (menu_key, fa_icon, custom_label, sort_order, entity) VALUES ('".$safeMk."', '".$safeIcon."', '".$safeMk."', ".$maxSort.", 1)");
-            $iconConfig[$mk] = array('fa_icon' => $autoIcon, 'custom_label' => $mk, 'is_hidden' => 0, 'sort_order' => $maxSort);
+            // Pick icon & label from known mapping, or use fallback
+            if (isset($moduleIconDefaults[$mk])) {
+                $autoIcon  = $moduleIconDefaults[$mk][0];
+                $autoLabel = $moduleIconDefaults[$mk][1];
+            } else {
+                $autoIcon  = 'fas fa-layer-group';
+                $autoLabel = ucfirst($mk);
+            }
+            $safeMk    = $db->escape($mk);
+            $safeIcon  = $db->escape($autoIcon);
+            $safeLabel = $db->escape($autoLabel);
+            $db->query("INSERT INTO ".MAIN_DB_PREFIX."flavor_config (menu_key, fa_icon, custom_label, sort_order, entity) VALUES ('".$safeMk."', '".$safeIcon."', '".$safeLabel."', ".$maxSort.", 1)");
+            $iconConfig[$mk] = array('fa_icon' => $autoIcon, 'custom_label' => $autoLabel, 'is_hidden' => 0, 'sort_order' => $maxSort);
             $maxSort += 10;
         }
     }
