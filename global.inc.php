@@ -5021,11 +5021,25 @@ body.bodylogin #login-submit-wrapper input:hover {
 	font-size: 1.1rem !important;
 	font-weight: 600 !important;
 	color: var(--flavor-slate-800) !important;
+	background: #FFFFFF !important;
+	padding-right: 20px !important;
 	white-space: nowrap !important;
 	letter-spacing: -0.01em !important;
 	z-index: 100 !important;
 	pointer-events: none !important;
 	transition: left 0.25s ease !important;
+}
+
+/* Collapse the empty gap where the body title was hidden */
+.fiche-head[style*="display: none"] + .fiche,
+.fiche-head[style*="display:none"] + .fiche {
+	margin-top: 0 !important;
+	padding-top: 0 !important;
+}
+
+/* Also reduce the gap in the content area when title is hidden */
+#id-right .fiche {
+	padding-top: 10px !important;
 }
 
 /* When sidebar collapsed, shift title left */
