@@ -5036,16 +5036,21 @@ body.bodylogin #login-submit-wrapper input:hover {
 }
 
 /* Reduce gap when body title was moved to topbar */
+/* Must use #mainbody prefix to beat original specificity: #mainbody #id-right { padding: 1.5rem ... } */
+#mainbody #id-right.flavor-title-hidden,
 #id-right.flavor-title-hidden {
-	padding-top: 0.5rem !important;
+	padding-top: 0 !important;
 }
+#mainbody #id-right.flavor-title-hidden .fiche,
 #id-right.flavor-title-hidden .fiche {
 	padding-top: 0 !important;
 	margin-top: 0 !important;
 }
+#mainbody #id-right.flavor-title-hidden > div.titre:first-child,
+#mainbody #id-right.flavor-title-hidden div.titre.inline-block,
+#mainbody #id-right.flavor-title-hidden .fiche > div.titre:first-child,
+#mainbody #id-right.flavor-title-hidden .fiche-head,
 #id-right.flavor-title-hidden > div.titre:first-child,
-#id-right.flavor-title-hidden div.titre.inline-block,
-#id-right.flavor-title-hidden .fiche > div.titre:first-child,
 #id-right.flavor-title-hidden .fiche-head {
 	display: none !important;
 	margin: 0 !important;
