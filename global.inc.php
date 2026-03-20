@@ -5014,28 +5014,25 @@ body.bodylogin #login-submit-wrapper input:hover {
 #flavor-topbar-title {
 	position: fixed !important;
 	top: 0 !important;
-	left: 60px !important;
-	right: 0 !important;
+	left: 300px !important;
 	height: 52px !important;
 	display: flex !important;
 	align-items: center !important;
-	padding-left: 255px !important;
+	padding-left: 15px !important;
 	padding-right: 20px !important;
 	font-size: 1.1rem !important;
 	font-weight: 600 !important;
 	color: var(--flavor-slate-800) !important;
-	background: #FFFFFF !important;
 	white-space: nowrap !important;
 	letter-spacing: -0.01em !important;
 	z-index: 100 !important;
 	pointer-events: none !important;
-	transition: left 0.25s ease, padding-left 0.25s ease !important;
+	transition: left 0.25s ease !important;
 }
 
-/* When sidebar collapsed, shift title left and reduce padding */
+/* When sidebar collapsed, title shifts after icon bar */
 #mainbody.flavor-sidebar-collapsed #flavor-topbar-title {
-	left: 60px !important;
-	padding-left: 30px !important;
+	left: 80px !important;
 }
 
 /* Reduce gap when body title was moved to topbar */
