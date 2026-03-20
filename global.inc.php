@@ -5035,27 +5035,23 @@ body.bodylogin #login-submit-wrapper input:hover {
 	left: 80px !important;
 }
 
-/* Reduce gap when body title was moved to topbar */
-/* Must use #mainbody prefix to beat original specificity: #mainbody #id-right { padding: 1.5rem ... } */
-#mainbody #id-right.flavor-title-hidden,
-#id-right.flavor-title-hidden {
-	padding-top: 0 !important;
+/* =================================================================
+   Hide body title via CSS (not JS) to prevent flash on refresh
+   and eliminate the gap. Title is copied to topbar by flavor.js.
+   Scoped to exclude login/TakePOS pages.
+   ================================================================= */
+body:not(.bodylogin):not(.bodytakepos) #mainbody #id-right,
+body:not(.bodylogin):not(.bodytakepos) #id-right {
+	padding-top: 8px !important;
 }
-#mainbody #id-right.flavor-title-hidden .fiche,
-#id-right.flavor-title-hidden .fiche {
-	padding-top: 0 !important;
-	margin-top: 0 !important;
-}
-#mainbody #id-right.flavor-title-hidden > div.titre:first-child,
-#mainbody #id-right.flavor-title-hidden div.titre.inline-block,
-#mainbody #id-right.flavor-title-hidden .fiche > div.titre:first-child,
-#mainbody #id-right.flavor-title-hidden .fiche-head,
-#id-right.flavor-title-hidden > div.titre:first-child,
-#id-right.flavor-title-hidden .fiche-head {
+
+body:not(.bodylogin):not(.bodytakepos) #id-right > div.titre:first-child,
+body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > div.titre:first-child,
+body:not(.bodylogin):not(.bodytakepos) #id-right .fiche-head:first-child {
 	display: none !important;
+	height: 0 !important;
 	margin: 0 !important;
 	padding: 0 !important;
-	height: 0 !important;
 	overflow: hidden !important;
 }
 

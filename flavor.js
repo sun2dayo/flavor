@@ -149,27 +149,8 @@ document.addEventListener("DOMContentLoaded", function () {
 			topbar.appendChild(titleDiv);
 		}
 
-		// Hide the original title in the body to prevent duplication
-		if (titleEl) {
-			// Hide the title's parent div.titre wrapper if it exists
-			var titreDiv = titleEl.closest('div.titre');
-			if (titreDiv) {
-				titreDiv.style.display = 'none';
-			}
-			// Also try .fiche-head
-			var ficheHead = titleEl.closest('.fiche-head');
-			if (ficheHead) {
-				ficheHead.style.display = 'none';
-			}
-			// Always hide the element itself as fallback
-			titleEl.style.display = 'none';
-
-			// Mark content area so CSS can reduce top gap
-			var idRight = document.getElementById('id-right');
-			if (idRight) {
-				idRight.classList.add('flavor-title-hidden');
-			}
-		}
+		// Note: body title is hidden via CSS in global.inc.php
+		// (prevents flash on refresh). JS only creates the topbar copy.
 	})();
 
 	// =====================================================================
