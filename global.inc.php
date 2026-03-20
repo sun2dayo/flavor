@@ -5039,15 +5039,20 @@ body.bodylogin #login-submit-wrapper input:hover {
    Hide body title via CSS (not JS) to prevent flash on refresh
    and eliminate the gap. Title is copied to topbar by flavor.js.
    Scoped to exclude login/TakePOS pages.
+   
+   Dolibarr renders titles with load_fiche_titre() as:
+   <table class="table-fiche-title"><tr class="toptitle"><td>
+     <div class="titre inline-block">TITLE</div>
+   </td></tr></table>
    ================================================================= */
 body:not(.bodylogin):not(.bodytakepos) #mainbody #id-right,
 body:not(.bodylogin):not(.bodytakepos) #id-right {
 	padding-top: 8px !important;
 }
 
-body:not(.bodylogin):not(.bodytakepos) #id-right > div.titre:first-child,
-body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > div.titre:first-child,
-body:not(.bodylogin):not(.bodytakepos) #id-right .fiche-head:first-child {
+body:not(.bodylogin):not(.bodytakepos) #id-right table.table-fiche-title:first-of-type,
+body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > table.table-fiche-title:first-of-type,
+body:not(.bodylogin):not(.bodytakepos) #id-right > table.table-fiche-title:first-of-type {
 	display: none !important;
 	height: 0 !important;
 	margin: 0 !important;
