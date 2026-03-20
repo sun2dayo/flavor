@@ -5039,16 +5039,22 @@ body.bodylogin #login-submit-wrapper input:hover {
 }
 
 /* Reduce gap when body title was moved to topbar */
+#id-right.flavor-title-hidden {
+	padding-top: 0.5rem !important;
+}
 #id-right.flavor-title-hidden .fiche {
-	padding-top: 5px !important;
+	padding-top: 0 !important;
 	margin-top: 0 !important;
 }
-#id-right.flavor-title-hidden div.titre,
+#id-right.flavor-title-hidden > div.titre:first-child,
+#id-right.flavor-title-hidden div.titre.inline-block,
+#id-right.flavor-title-hidden .fiche > div.titre:first-child,
 #id-right.flavor-title-hidden .fiche-head {
 	display: none !important;
 	margin: 0 !important;
 	padding: 0 !important;
 	height: 0 !important;
+	overflow: hidden !important;
 }
 
 @media (max-width: 1024px) {
