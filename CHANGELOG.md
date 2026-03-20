@@ -6,6 +6,52 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [1.1.0] — 2026-03-20
+
+### Added
+
+#### Topbar Title System
+
+- Page title moved from body to a fixed topbar element
+- CSS-only hiding of body title (no JS flash on refresh)
+- Responsive: hides topbar title on mobile (≤1024px)
+
+#### Unique Sidebar Icons
+
+- 12 native menus now have creative, non-repeating FontAwesome icons
+- 27+ auto-detected modules get contextual icons (no more `fa-puzzle-piece`)
+- Smart `$moduleIconDefaults` map with icon + label pairs
+- Unknown modules fall back to `fa-layer-group` instead of `fa-puzzle-piece`
+
+#### Theme-Colored Action Buttons
+
+- Quick-add (+) button: indigo filled circle with scale + shadow hover
+- List/Kanban view toggles: ghost indigo style with border
+- Selected toggle: filled indigo with white icon
+- Hover darkens (#4F46E5), active goes deeper (#3730A3)
+
+### Improved
+
+#### Icon Manager (`setup.php`)
+
+- Pre-seed loop ensures all 12 native menus always appear in config
+- Auto-detect inserts both icon AND human-readable label from defaults map
+- Works even when modules are not active in `llx_menu`
+
+#### Content Area
+
+- Eliminated persistent gap caused by hidden title elements
+- Reduced `#id-right` top padding to 8px
+- Title bar kept visible (compact) to preserve action buttons
+
+### Fixed
+
+- Action buttons (+, list/kanban) no longer hidden with title
+- Topbar title no longer overlaps sidebar indigo background
+- No more title flash on page refresh
+
+---
+
 ## [1.0.0] — 2026-03-18
 
 ### Added

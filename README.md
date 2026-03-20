@@ -4,7 +4,7 @@ A modern SaaS-style theme that transforms the Dolibarr interface with a premium,
 
 ![Dolibarr](https://img.shields.io/badge/Dolibarr-22.0.4+-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-GPL--3.0-green?style=flat-square)
-![Version](https://img.shields.io/badge/Version-1.0.0-orange?style=flat-square)
+![Version](https://img.shields.io/badge/Version-1.1.0-orange?style=flat-square)
 
 ---
 
@@ -17,6 +17,24 @@ A modern SaaS-style theme that transforms the Dolibarr interface with a premium,
 - **Modern Typography** — Inter + Plus Jakarta Sans font stack
 - **Micro-animations** — Smooth hover effects, transitions, and slide-in animations
 - **Dark Vibrant Top Bar Icons** — Colorized icons for maximum visibility
+
+### Topbar Title System
+
+- **Smart Title Relocation** — Page title moves from body to fixed topbar element
+- **CSS-only Hiding** — No JavaScript flash on refresh; pure CSS approach
+- **Action Buttons Preserved** — Quick-add (+), list/kanban view toggles stay visible
+
+### Unique Sidebar Icons
+
+- **39 Creative Icons** — 12 native menus + 27 known modules with unique, contextual FontAwesome icons
+- **Smart Auto-detect** — New modules get intelligent icon suggestions instead of generic puzzle-piece
+- **User Customizable** — Default icons can be changed anytime via the Icon Manager
+
+### Theme-Colored Action Buttons
+
+- **Quick-add (+)** — Indigo filled circle with scale + shadow hover animation
+- **View Toggles** — Ghost indigo list/kanban buttons with hover and active states
+- **Selected State** — Filled indigo with white icon for active view mode
 
 ### White-labeling
 
@@ -33,6 +51,7 @@ A modern SaaS-style theme that transforms the Dolibarr interface with a premium,
 
 ### Advanced Setup Panel (`setup.php`)
 
+- **Icon Manager** — Customize FontAwesome icons and labels for all sidebar menus
 - **Menu Manager** — Hide/show any of the 12 main sidebar menus
 - **Admin Tools Control** — Granular visibility for all 19 Admin Tools submenu items
 - **Module Tabs Manager** — Hide external modules, deploy, and develop tabs
@@ -73,8 +92,10 @@ flavor/
 ├── global.inc.php          # Main CSS — all NovaDX styles
 ├── style.css.php           # CSS entry point (loads global.inc.php)
 ├── theme_vars.inc.php      # Color & font variable definitions
-├── setup.php               # Admin setup panel (Menu Manager + Lock)
-├── flavor.js               # JS white-labeling (text replacement)
+├── setup.php               # Admin setup panel (Icon + Menu Manager)
+├── install.php             # One-time DB installer (creates llx_flavor_config)
+├── install.lock            # Install lock (auto-created after install)
+├── flavor.js               # JS white-labeling + sidebar icon replacement
 ├── dolisaas-ui.js           # Additional UI enhancements
 ├── flavor_hidden.css        # Auto-generated menu visibility rules
 ├── flavor.lock              # Security lock file (created via setup)
