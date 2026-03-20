@@ -236,6 +236,36 @@ if ($resql) {
     }
 }
 
+// ── Pre-seed native menus from $availableMenus ──
+// Ensures all native menus exist in llx_flavor_config even if not in llx_menu
+$nativeSort = 10;
+$nativeDefaults = array(
+    'home'        => array('fas fa-solar-panel',        'Dashboard'),
+    'companies'   => array('fas fa-city',               'Third Parties'),
+    'products'    => array('fas fa-cube',               'Products / Services'),
+    'commercial'  => array('fas fa-handshake',          'Commercial'),
+    'compta'      => array('fas fa-receipt',             'Billing / Payments'),
+    'accountancy' => array('fas fa-balance-scale-right', 'Accountancy'),
+    'bank'        => array('fas fa-landmark',           'Banking'),
+    'project'     => array('fas fa-rocket',             'Projects'),
+    'hrm'         => array('fas fa-user-tie',           'HR / Leaves'),
+    'ticket'      => array('fas fa-headset',            'Tickets / Support'),
+    'tools'       => array('fas fa-cogs',               'Tools'),
+    'members'     => array('fas fa-address-book',       'Members'),
+);
+foreach ($availableMenus as $nativeKey => $nativeMenu) {
+    if (!isset($iconConfig[$nativeKey])) {
+        $icon  = isset($nativeDefaults[$nativeKey]) ? $nativeDefaults[$nativeKey][0] : 'fas fa-layer-group';
+        $label = isset($nativeDefaults[$nativeKey]) ? $nativeDefaults[$nativeKey][1] : ucfirst($nativeKey);
+        $safeMk    = $db->escape($nativeKey);
+        $safeIcon  = $db->escape($icon);
+        $safeLabel = $db->escape($label);
+        $db->query("INSERT INTO ".MAIN_DB_PREFIX."flavor_config (menu_key, fa_icon, custom_label, sort_order, entity) VALUES ('".$safeMk."', '".$safeIcon."', '".$safeLabel."', ".$nativeSort.", 1)");
+        $iconConfig[$nativeKey] = array('fa_icon' => $icon, 'custom_label' => $label, 'is_hidden' => 0, 'sort_order' => $nativeSort);
+    }
+    $nativeSort += 10;
+}
+
 // ── Auto-detect non-native modules from llx_menu ──
 // Smart icon & label defaults for ALL known menus (native + modules)
 $moduleIconDefaults = array(
