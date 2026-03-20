@@ -77,8 +77,14 @@ A modern SaaS-style theme that transforms the Dolibarr interface with a premium,
    - Go to **Home → Setup → Display**
    - Select **Flavor** as the active theme
 
-3. **Run Setup** (optional but recommended):
+3. **Run Database Installer** (required, one-time):
+   - Visit `http://your-dolibarr/theme/flavor/install.php`
+   - Creates the `llx_flavor_config` table and seeds default icon mappings
+   - Auto-locks after successful installation
+
+4. **Run Setup** (optional but recommended):
    - Visit `http://your-dolibarr/theme/flavor/setup.php`
+   - Customize sidebar icons and labels
    - Activate white-labeling
    - Configure menu visibility
    - Lock the setup page when done
