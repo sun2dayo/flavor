@@ -5080,6 +5080,75 @@ body:not(.bodylogin):not(.bodytakepos) #id-right .fiche > table.table-fiche-titl
 	border-bottom: none !important;
 }
 
+/* ── Action button theme styling (quick-add, view toggles) ────────── */
+/* Quick-add button (+) — filled indigo pill */
+.btnTitlePlus {
+	background: #6366F1 !important;
+	color: #fff !important;
+	border: none !important;
+	border-radius: 50% !important;
+	width: 36px !important;
+	height: 36px !important;
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	transition: all 0.2s ease !important;
+	box-shadow: 0 2px 8px rgba(99,102,241,0.3) !important;
+}
+.btnTitlePlus:hover {
+	background: #818CF8 !important;
+	transform: scale(1.1) !important;
+	box-shadow: 0 4px 14px rgba(99,102,241,0.45) !important;
+}
+.btnTitlePlus:active {
+	background: #4F46E5 !important;
+	transform: scale(0.95) !important;
+}
+.btnTitlePlus .btnTitle-icon {
+	color: #fff !important;
+	font-size: 16px !important;
+}
+.btnTitlePlus .btnTitle-label {
+	display: none !important;
+}
+
+/* View toggle buttons (list/kanban) — ghost indigo style */
+.btnTitle:not(.btnTitlePlus) {
+	color: #6366F1 !important;
+	border: 1px solid #E0E0EF !important;
+	border-radius: 8px !important;
+	padding: 6px 10px !important;
+	transition: all 0.2s ease !important;
+	background: transparent !important;
+}
+.btnTitle:not(.btnTitlePlus):hover {
+	background: rgba(99,102,241,0.08) !important;
+	border-color: #6366F1 !important;
+	color: #4F46E5 !important;
+}
+.btnTitle:not(.btnTitlePlus):active {
+	background: rgba(99,102,241,0.15) !important;
+	color: #4338CA !important;
+}
+.btnTitle:not(.btnTitlePlus) .btnTitle-icon {
+	color: inherit !important;
+}
+
+/* Selected/active view toggle button */
+.btnTitleSelected,
+.btnTitle.btnTitleSelected:not(.btnTitlePlus) {
+	background: #6366F1 !important;
+	color: #fff !important;
+	border-color: #6366F1 !important;
+}
+.btnTitleSelected .btnTitle-icon {
+	color: #fff !important;
+}
+.btnTitleSelected:hover {
+	background: #818CF8 !important;
+	border-color: #818CF8 !important;
+}
+
 @media (max-width: 1024px) {
 	#flavor-topbar-title {
 		display: none !important;
