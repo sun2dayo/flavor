@@ -376,21 +376,35 @@ document.addEventListener("DOMContentLoaded", function () {
 
 		// Icon mapping for main menu items (mainmenu class → FontAwesome)
 		var iconMap = {
-			'home': 'fas fa-home',
-			'companies': 'fas fa-building',
-			'commercial': 'fas fa-handshake',
-			'billing': 'fas fa-file-invoice-dollar',
-			'accountancy': 'fas fa-calculator',
-			'bank': 'fas fa-university',
+			'home': 'fas fa-solar-panel',
+			'companies': 'fas fa-city',
 			'products': 'fas fa-cube',
-			'projects': 'fas fa-project-diagram',
-			'hrm': 'fas fa-users',
-			'ticket': 'fas fa-ticket-alt',
-			'tools': 'fas fa-wrench',
-			'members': 'fas fa-id-card',
-			'agenda': 'fas fa-calendar-alt',
+			'commercial': 'fas fa-handshake',
+			'compta': 'fas fa-receipt',
+			'billing': 'fas fa-file-invoice',
+			'accountancy': 'fas fa-balance-scale-right',
+			'bank': 'fas fa-landmark',
+			'project': 'fas fa-rocket',
+			'projects': 'fas fa-rocket',
+			'hrm': 'fas fa-user-tie',
+			'ticket': 'fas fa-headset',
+			'tools': 'fas fa-cogs',
+			'members': 'fas fa-address-book',
+			'agenda': 'fas fa-calendar-check',
 			'ecm': 'fas fa-folder-open',
-			'website': 'fas fa-globe'
+			'mrp': 'fas fa-industry',
+			'takepos': 'fas fa-cash-register',
+			'website': 'fas fa-globe-americas',
+			'recruitment': 'fas fa-user-plus',
+			'holiday': 'fas fa-umbrella-beach',
+			'expensereport': 'fas fa-money-check-alt',
+			'don': 'fas fa-hand-holding-heart',
+			'loan': 'fas fa-piggy-bank',
+			'contracts': 'fas fa-file-signature',
+			'interventions': 'fas fa-toolbox',
+			'supplier': 'fas fa-truck-loading',
+			'shipping': 'fas fa-shipping-fast',
+			'stock': 'fas fa-warehouse'
 		};
 
 		// ---- 1. Read menu items from the desktop tmenu ----

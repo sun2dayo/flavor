@@ -71,18 +71,18 @@ if ($resql) {
 
 // ── Step 2: Seed default icon mappings ───────────────────────────────────────
 $defaultMappings = array(
-    array('home',        'fas fa-tachometer-alt',     'Dashboard'),
-    array('companies',   'fas fa-building',           'Third Parties'),
-    array('products',    'fas fa-box-open',           'Products / Services'),
-    array('commercial',  'fas fa-briefcase',          'Commercial'),
-    array('compta',      'fas fa-file-invoice-dollar', 'Billing / Payments'),
-    array('accountancy', 'fas fa-book',               'Accountancy'),
-    array('bank',        'fas fa-university',         'Banking'),
-    array('project',     'fas fa-project-diagram',    'Projects'),
-    array('hrm',         'fas fa-users',              'HR / Leaves'),
-    array('ticket',      'fas fa-life-ring',          'Tickets / Support'),
-    array('tools',       'fas fa-tools',              'Tools'),
-    array('members',     'fas fa-id-card',            'Members'),
+    array('home',        'fas fa-solar-panel',        'Dashboard'),
+    array('companies',   'fas fa-city',               'Third Parties'),
+    array('products',    'fas fa-cube',               'Products / Services'),
+    array('commercial',  'fas fa-handshake',          'Commercial'),
+    array('compta',      'fas fa-receipt',            'Billing / Payments'),
+    array('accountancy', 'fas fa-balance-scale-right','Accountancy'),
+    array('bank',        'fas fa-landmark',           'Banking'),
+    array('project',     'fas fa-rocket',             'Projects'),
+    array('hrm',         'fas fa-user-tie',           'HR / Leaves'),
+    array('ticket',      'fas fa-headset',            'Tickets / Support'),
+    array('tools',       'fas fa-cogs',               'Tools'),
+    array('members',     'fas fa-address-book',       'Members'),
 );
 
 $seedCount  = 0;
